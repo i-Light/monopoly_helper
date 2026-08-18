@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
 
 class QuickAmountDialog extends StatefulWidget {
   final String title;
@@ -50,7 +50,7 @@ class _QuickAmountDialogState extends State<QuickAmountDialog> {
             spacing: 6,
             children: [20, 50, 100, 150, 200, 500].map((val) {
               return ActionChip(
-                label: Text('+$val\$'),
+                label: Text('+$val £'),
                 onPressed: () => setState(() => _amountController.text = '$val'),
               );
             }).toList(),

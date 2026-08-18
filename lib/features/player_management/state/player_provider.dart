@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/game_constants.dart';
-import '../../../data/models/player_model.dart';
-import '../../../data/models/transaction_model.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/game_constants.dart';
+import 'package:monopoly_helper/data/models/player_model.dart';
+import 'package:monopoly_helper/data/models/transaction_model.dart';
 
 class PlayerProvider extends ChangeNotifier {
   final List<PlayerModel> _players = [];
@@ -86,7 +86,7 @@ class PlayerProvider extends ChangeNotifier {
         toPlayerName: newPlayer.name,
         amount: startingBalance,
         type: TransactionType.bankSalary,
-        description: 'انضمام لاعب جديد برصيد افتتاحي $startingBalance\$',
+        description: 'انضمام لاعب جديد برصيد افتتاحي $startingBalance £',
       ),
     );
     notifyListeners();
@@ -122,7 +122,7 @@ class PlayerProvider extends ChangeNotifier {
         toPlayerName: player.name,
         amount: amount,
         type: TransactionType.passGo,
-        description: 'المرور بنقطة البداية (GO) +$amount\$',
+        description: 'المرور بنقطة البداية (GO) +$amount £',
       ),
     );
     notifyListeners();
@@ -215,7 +215,7 @@ class PlayerProvider extends ChangeNotifier {
   void releaseFromJail(String playerId, {bool payBail = true}) {
     final player = _players.firstWhere((p) => p.id == playerId);
     if (payBail) {
-      payToBank(playerId, GameConstants.jailBailCost, note: 'كفالة الخروج من السجن (50\$)');
+      payToBank(playerId, GameConstants.jailBailCost, note: 'كفالة الخروج من السجن (50£)');
     }
     player.isInJail = false;
     player.jailTurns = 0;
@@ -256,13 +256,13 @@ class PlayerProvider extends ChangeNotifier {
       receiveFromBank(
         playerId,
         rewardAmount,
-        note: 'مكافأة الفوز في لعبة: $gameTitle (+$rewardAmount\$)',
+        note: 'مكافأة الفوز في لعبة: $gameTitle (+$rewardAmount £)',
       );
     } else {
       payToBank(
         playerId,
         penaltyAmount,
-        note: 'عقوبة الإخفاق في لعبة: $gameTitle (-$penaltyAmount\$)',
+        note: 'عقوبة الإخفاق في لعبة: $gameTitle (-$penaltyAmount £)',
       );
     }
   }

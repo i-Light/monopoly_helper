@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../../core/widgets/dice_widget.dart';
-import '../../../../core/widgets/player_avatar.dart';
-import '../../../player_management/state/player_provider.dart';
-import '../../../mini_games/core/mini_game_manager.dart';
-import '../../../mini_games/presentation/mini_game_runner_screen.dart';
-import 'widgets/quick_actions_panel.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/core/widgets/dice_widget.dart';
+import 'package:monopoly_helper/core/widgets/player_avatar.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_manager.dart';
+import 'package:monopoly_helper/features/mini_games/presentation/mini_game_runner_screen.dart';
+import 'package:monopoly_helper/features/dashboard/presentation/widgets/quick_actions_panel.dart';
 
 class MainDashboardScreen extends StatelessWidget {
   const MainDashboardScreen({super.key});
@@ -81,7 +81,7 @@ class MainDashboardScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         Text(
-                          '${playerProvider.totalCashInGame} \$',
+                          '${playerProvider.totalCashInGame} £',
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w900,
@@ -262,7 +262,7 @@ class MainDashboardScreen extends StatelessWidget {
                                     label: Text('في السجن', style: TextStyle(fontSize: 10, color: Colors.white)),
                                     backgroundColor: Colors.red,
                                     padding: EdgeInsets.zero,
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
                                   ),
                                 ],
                                 if (p.isBankrupt) ...[
@@ -271,7 +271,7 @@ class MainDashboardScreen extends StatelessWidget {
                                     label: Text('مفلس', style: TextStyle(fontSize: 10, color: Colors.white)),
                                     backgroundColor: Colors.grey,
                                     padding: EdgeInsets.zero,
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
                                   ),
                                 ],
                               ],
@@ -284,7 +284,7 @@ class MainDashboardScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${p.balance} \$',
+                        '${p.balance} £',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w900,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/game_constants.dart';
+import 'package:monopoly_helper/core/constants/game_constants.dart';
 
 class SettingsProvider extends ChangeNotifier {
   int _startingCash = GameConstants.defaultStartingCash;

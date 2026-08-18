@@ -1,20 +1,20 @@
 import 'dart:math';
-import 'base_mini_game.dart';
-import 'mini_game_difficulty.dart';
-import '../easy/fast_stop_bus_game.dart';
-import '../easy/rhyme_challenge_game.dart';
-import '../easy/short_reverse_word_game.dart';
-import '../easy/speed_math_game.dart';
-import '../medium/common_letter_finder_game.dart';
-import '../medium/common_questions_logic_game.dart';
-import '../medium/last_letter_word_chain_game.dart';
-import '../medium/odd_one_out_game.dart';
-import '../medium/word_ban_game.dart';
-import '../hard/double_constraint_word_game.dart';
-import '../hard/fitness_challenges_game.dart';
-import '../hard/hard_stop_bus_game.dart';
-import '../hard/stroop_effect_game.dart';
-import '../hard/tongue_twisters_game.dart';
+import 'package:monopoly_helper/features/mini_games/core/base_mini_game.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_difficulty.dart';
+import 'package:monopoly_helper/features/mini_games/easy/fast_stop_bus_game.dart';
+import 'package:monopoly_helper/features/mini_games/easy/rhyme_challenge_game.dart';
+import 'package:monopoly_helper/features/mini_games/easy/short_reverse_word_game.dart';
+import 'package:monopoly_helper/features/mini_games/easy/speed_math_game.dart';
+import 'package:monopoly_helper/features/mini_games/medium/common_letter_finder_game.dart';
+import 'package:monopoly_helper/features/mini_games/medium/common_questions_logic_game.dart';
+import 'package:monopoly_helper/features/mini_games/medium/last_letter_word_chain_game.dart';
+import 'package:monopoly_helper/features/mini_games/medium/odd_one_out_game.dart';
+import 'package:monopoly_helper/features/mini_games/medium/word_ban_game.dart';
+import 'package:monopoly_helper/features/mini_games/hard/double_constraint_word_game.dart';
+import 'package:monopoly_helper/features/mini_games/hard/fitness_challenges_game.dart';
+import 'package:monopoly_helper/features/mini_games/hard/hard_stop_bus_game.dart';
+import 'package:monopoly_helper/features/mini_games/hard/stroop_effect_game.dart';
+import 'package:monopoly_helper/features/mini_games/hard/tongue_twisters_game.dart';
 
 class MiniGameManager {
   static final MiniGameManager _instance = MiniGameManager._internal();

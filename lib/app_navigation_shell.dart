@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'core/constants/app_colors.dart';
-import 'core/constants/app_strings.dart';
-import 'features/dashboard/presentation/main_dashboard_screen.dart';
-import 'features/player_management/presentation/player_list_screen.dart';
-import 'features/mini_games/presentation/mini_games_hub_screen.dart';
-import 'features/chance_community/presentation/cards_deck_screen.dart';
-import 'features/history/presentation/game_log_screen.dart';
-import 'features/settings/presentation/settings_screen.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/features/dashboard/presentation/main_dashboard_screen.dart';
+import 'package:monopoly_helper/features/player_management/presentation/player_list_screen.dart';
+import 'package:monopoly_helper/features/mini_games/presentation/mini_games_hub_screen.dart';
+import 'package:monopoly_helper/features/chance_community/presentation/cards_deck_screen.dart';
+import 'package:monopoly_helper/features/history/presentation/game_log_screen.dart';
+import 'package:monopoly_helper/features/settings/presentation/settings_screen.dart';
 
 class AppNavigationShell extends StatefulWidget {
   const AppNavigationShell({super.key});

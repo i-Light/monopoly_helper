@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/theme_provider.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../player_management/state/player_provider.dart';
-import '../../state/settings_provider.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/theme/theme_provider.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/settings/state/settings_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -34,14 +34,12 @@ class SettingsScreen extends StatelessWidget {
                   title: const Text(AppStrings.darkMode),
                   subtitle: const Text('التبديل بين الوضع الليلي والنهاري'),
                   value: themeProvider.isDarkMode,
-                  activeColor: AppColors.primary,
                   onChanged: (_) => themeProvider.toggleTheme(),
                 ),
                 SwitchListTile(
                   title: const Text('اتجاه الواجهة (RTL / LTR)'),
                   subtitle: Text(themeProvider.isRTL ? 'من اليمين لليسار (العربية)' : 'من اليسار لليمين (English)'),
                   value: themeProvider.isRTL,
-                  activeColor: AppColors.primary,
                   onChanged: (_) => themeProvider.toggleDirection(),
                 ),
               ],
@@ -60,14 +58,12 @@ class SettingsScreen extends StatelessWidget {
                   title: const Text(AppStrings.soundEffects),
                   subtitle: const Text('تشغيل أصوات رمي النرد والمؤقت والنتائج'),
                   value: settingsProvider.soundEnabled,
-                  activeColor: AppColors.primary,
                   onChanged: (val) => settingsProvider.toggleSound(val),
                 ),
                 SwitchListTile(
                   title: const Text('الاهتزاز اللمسي (Haptics)'),
                   subtitle: const Text('تفعيل الاهتزاز عند التفاعل'),
                   value: settingsProvider.vibrationEnabled,
-                  activeColor: AppColors.primary,
                   onChanged: (val) => settingsProvider.toggleVibration(val),
                 ),
               ],
@@ -84,15 +80,15 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 ListTile(
                   title: const Text('الرصيد الافتتاحي للاعب'),
-                  trailing: Text('${settingsProvider.startingCash} \$', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  trailing: Text('${settingsProvider.startingCash} £', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ),
                 ListTile(
                   title: const Text('مكافأة المرور بالبداية (GO)'),
-                  trailing: Text('${settingsProvider.goSalary} \$', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  trailing: Text('${settingsProvider.goSalary} £', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ),
                 ListTile(
                   title: const Text('كفالة الخروج من السجن'),
-                  trailing: Text('${settingsProvider.jailBail} \$', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  trailing: Text('${settingsProvider.jailBail} £', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ),
               ],
             ),

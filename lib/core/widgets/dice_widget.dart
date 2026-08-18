@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../utils/sound_helper.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/utils/sound_helper.dart';
 
 class DiceWidget extends StatefulWidget {
   final int die1;

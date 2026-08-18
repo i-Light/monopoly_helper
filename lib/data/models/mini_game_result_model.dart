@@ -1,4 +1,4 @@
-import '../../features/mini_games/core/mini_game_difficulty.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_difficulty.dart';
 
 class MiniGameResultModel {
   final String id;

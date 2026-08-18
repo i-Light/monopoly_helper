@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
 
 class AppTextStyles {
   AppTextStyles._();

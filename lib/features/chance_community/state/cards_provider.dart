@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/datasets/chance_community_cards_data.dart';
-import '../../../data/models/chance_card_model.dart';
-import '../../player_management/state/player_provider.dart';
+import 'package:monopoly_helper/data/datasets/chance_community_cards_data.dart';
+import 'package:monopoly_helper/data/models/chance_card_model.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
 
 class CardsProvider extends ChangeNotifier {
   ChanceCardModel? _lastDrawnCard;

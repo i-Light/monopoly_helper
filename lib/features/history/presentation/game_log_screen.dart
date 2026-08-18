@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../../data/models/transaction_model.dart';
-import '../../../player_management/state/player_provider.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/data/models/transaction_model.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
 
 class GameLogScreen extends StatelessWidget {
   const GameLogScreen({super.key});
@@ -50,11 +49,17 @@ class GameLogScreen extends StatelessWidget {
     }
   }
 
+  String _formatTime(DateTime dt) {
+    final h = dt.hour.toString().padLeft(2, '0');
+    final m = dt.minute.toString().padLeft(2, '0');
+    final s = dt.second.toString().padLeft(2, '0');
+    return '$h:$m:$s';
+  }
+
   @override
   Widget build(BuildContext context) {
     final playerProvider = context.watch<PlayerProvider>();
     final transactions = playerProvider.transactions;
-    final timeFormat = DateFormat('HH:mm:ss');
 
     return Scaffold(
       appBar: AppBar(
@@ -129,7 +134,7 @@ class GameLogScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              timeFormat.format(tx.timestamp),
+                              _formatTime(tx.timestamp),
                               style: const TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                           ],
@@ -137,7 +142,7 @@ class GameLogScreen extends StatelessWidget {
                       ),
                       if (tx.amount > 0)
                         Text(
-                          '${tx.amount} \$',
+                          '${tx.amount} £',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
 
 class AppTheme {
   AppTheme._();
@@ -13,15 +13,14 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         surface: AppColors.darkSurface,
-        background: AppColors.darkBackground,
         error: AppColors.error,
         onPrimary: Colors.white,
         onSecondary: Colors.black,
         onSurface: Colors.white,
-        onBackground: Colors.white,
+        onError: Colors.white,
       ),
       fontFamily: 'Cairo',
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.darkCard,
         elevation: 3,
         shape: RoundedRectangleBorder(
@@ -41,7 +40,7 @@ class AppTheme {
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.darkSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -113,15 +112,14 @@ class AppTheme {
         primary: AppColors.primaryDark,
         secondary: AppColors.secondary,
         surface: AppColors.lightSurface,
-        background: AppColors.lightBackground,
         error: AppColors.error,
         onPrimary: Colors.white,
         onSecondary: Colors.black,
         onSurface: Color(0xFF1E262B),
-        onBackground: Color(0xFF1E262B),
+        onError: Colors.white,
       ),
       fontFamily: 'Cairo',
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.lightCard,
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -141,7 +139,7 @@ class AppTheme {
         ),
         iconTheme: IconThemeData(color: Color(0xFF1E262B)),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.lightSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),

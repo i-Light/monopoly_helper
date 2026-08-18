@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../state/player_provider.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
 
 class TransferMoneyDialog extends StatefulWidget {
   final String? defaultFromPlayerId;
@@ -61,7 +61,7 @@ class _TransferMoneyDialogState extends State<TransferMoneyDialog> {
               items: players
                   .map((p) => DropdownMenuItem(
                         value: p.id,
-                        child: Text('${p.name} (رصيده: ${p.balance}\$)'),
+                        child: Text('${p.name} (رصيده: ${p.balance} £)'),
                       ))
                   .toList(),
               onChanged: (val) => setState(() => _fromPlayerId = val),
@@ -73,7 +73,7 @@ class _TransferMoneyDialogState extends State<TransferMoneyDialog> {
               items: players
                   .map((p) => DropdownMenuItem(
                         value: p.id,
-                        child: Text('${p.name} (رصيده: ${p.balance}\$)'),
+                        child: Text('${p.name} (رصيده: ${p.balance} £)'),
                       ))
                   .toList(),
               onChanged: (val) => setState(() => _toPlayerId = val),

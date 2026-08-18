@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'base_mini_game.dart';
-import 'mini_game_difficulty.dart';
-import '../../../core/utils/timer_helper.dart';
-import '../../../data/models/player_model.dart';
+import 'package:monopoly_helper/features/mini_games/core/base_mini_game.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_difficulty.dart';
+import 'package:monopoly_helper/core/utils/timer_helper.dart';
+import 'package:monopoly_helper/data/models/player_model.dart';
 
 enum GamePlayState {
   notStarted,

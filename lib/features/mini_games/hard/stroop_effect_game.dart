@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../core/base_mini_game.dart';
-import '../core/mini_game_difficulty.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/game_constants.dart';
-import '../../../core/widgets/custom_card.dart';
-import '../../../data/datasets/stroop_effect_data.dart';
+import 'package:monopoly_helper/features/mini_games/core/base_mini_game.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_difficulty.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/game_constants.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/data/datasets/stroop_effect_data.dart';
 
 class StroopEffectGame extends BaseMiniGame {
   StroopItem? _currentChallenge;

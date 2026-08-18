@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../player_management/state/player_provider.dart';
-import '../../../player_management/presentation/dialogs/add_player_dialog.dart';
-import '../../../player_management/presentation/dialogs/transfer_money_dialog.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/player_management/presentation/dialogs/add_player_dialog.dart';
+import 'package:monopoly_helper/features/player_management/presentation/dialogs/transfer_money_dialog.dart';
 
 class QuickActionsPanel extends StatelessWidget {
   const QuickActionsPanel({super.key});
@@ -60,11 +60,11 @@ class QuickActionsPanel extends StatelessWidget {
                     : () {
                         playerProvider.passGo(currentPlayer.id);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('حصل ${currentPlayer.name} على 200\$ (GO)')),
+                          SnackBar(content: Text('حصل ${currentPlayer.name} على 200£ (GO)')),
                         );
                       },
                 icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                label: const Text('مرور بالبداية (+200\$)'),
+                label: const Text('مرور بالبداية (+200£)'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.boardGreen,
                   padding: const EdgeInsets.symmetric(horizontal: 8),

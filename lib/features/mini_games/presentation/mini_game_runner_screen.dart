@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/utils/sound_helper.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../../core/widgets/difficulty_badge.dart';
-import '../../../../core/widgets/game_timer_widget.dart';
-import '../../../../core/widgets/player_avatar.dart';
-import '../../../../data/models/player_model.dart';
-import '../../../player_management/state/player_provider.dart';
-import '../../core/base_mini_game.dart';
-import '../../core/mini_game_session.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/utils/sound_helper.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/core/widgets/difficulty_badge.dart';
+import 'package:monopoly_helper/core/widgets/game_timer_widget.dart';
+import 'package:monopoly_helper/core/widgets/player_avatar.dart';
+import 'package:monopoly_helper/data/models/player_model.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/mini_games/core/base_mini_game.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_session.dart';
 
 class MiniGameRunnerScreen extends StatefulWidget {
   final BaseMiniGame game;
@@ -110,7 +110,7 @@ class _MiniGameRunnerScreenState extends State<MiniGameRunnerScreen> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    isWon ? '+${widget.game.rewardAmount} \$' : '-${widget.game.penaltyAmount} \$',
+                    isWon ? '+${widget.game.rewardAmount} £' : '-${widget.game.penaltyAmount} £',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
@@ -181,7 +181,7 @@ class _MiniGameRunnerScreenState extends State<MiniGameRunnerScreen> {
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              'رصيده: ${widget.challenger.balance} \$',
+                              'رصيده: ${widget.challenger.balance} £',
                               style: const TextStyle(fontSize: 13, color: AppColors.cashGold, fontWeight: FontWeight.bold),
                             ),
                           ],

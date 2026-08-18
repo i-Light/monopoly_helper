@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../../core/widgets/difficulty_badge.dart';
-import '../../../player_management/state/player_provider.dart';
-import '../../core/base_mini_game.dart';
-import '../../core/mini_game_difficulty.dart';
-import '../../core/mini_game_manager.dart';
-import 'mini_game_runner_screen.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/core/widgets/difficulty_badge.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/mini_games/core/base_mini_game.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_difficulty.dart';
+import 'package:monopoly_helper/features/mini_games/core/mini_game_manager.dart';
+import 'package:monopoly_helper/features/mini_games/presentation/mini_game_runner_screen.dart';
 
 class MiniGamesHubScreen extends StatefulWidget {
   const MiniGamesHubScreen({super.key});
@@ -167,7 +167,7 @@ class _MiniGamesHubScreenState extends State<MiniGamesHubScreen> {
                                 const SizedBox(width: 14),
                                 const Icon(Icons.card_giftcard, size: 14, color: AppColors.cashGold),
                                 const SizedBox(width: 4),
-                                Text('+${game.rewardAmount}\$ / -${game.penaltyAmount}\$', style: const TextStyle(fontSize: 12, color: AppColors.cashGold, fontWeight: FontWeight.bold)),
+                                Text('+${game.rewardAmount}£ / -${game.penaltyAmount}£', style: const TextStyle(fontSize: 12, color: AppColors.cashGold, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ],

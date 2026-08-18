@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../../data/models/chance_card_model.dart';
-import '../../../player_management/state/player_provider.dart';
-import '../../state/cards_provider.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/data/models/chance_card_model.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/chance_community/state/cards_provider.dart';
 
 class CardsDeckScreen extends StatelessWidget {
   const CardsDeckScreen({super.key});
@@ -162,7 +162,7 @@ class CardsDeckScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  'المبلغ: ${card.amount} \$',
+                                  'المبلغ: ${card.amount} £',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,

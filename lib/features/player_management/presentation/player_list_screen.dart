@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../../../core/widgets/player_avatar.dart';
-import '../../state/player_provider.dart';
-import 'dialogs/add_player_dialog.dart';
-import 'dialogs/transfer_money_dialog.dart';
-import 'dialogs/quick_amount_dialog.dart';
+import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/widgets/custom_card.dart';
+import 'package:monopoly_helper/core/widgets/player_avatar.dart';
+import 'package:monopoly_helper/features/player_management/state/player_provider.dart';
+import 'package:monopoly_helper/features/player_management/presentation/dialogs/add_player_dialog.dart';
+import 'package:monopoly_helper/features/player_management/presentation/dialogs/transfer_money_dialog.dart';
+import 'package:monopoly_helper/features/player_management/presentation/dialogs/quick_amount_dialog.dart';
 
 class PlayerListScreen extends StatelessWidget {
   const PlayerListScreen({super.key});
@@ -95,7 +95,7 @@ class PlayerListScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'صافي الثروة: ${player.netWorth} \$',
+                                  'صافي الثروة: ${player.netWorth} £',
                                   style: const TextStyle(fontSize: 13, color: Colors.grey),
                                 ),
                               ],
@@ -105,7 +105,7 @@ class PlayerListScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '${player.balance} \$',
+                                '${player.balance} £',
                                 style: const TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w900,
@@ -158,7 +158,7 @@ class PlayerListScreen extends StatelessWidget {
                           ),
                           ActionChip(
                             avatar: const Icon(Icons.arrow_forward, size: 16, color: AppColors.boardGreen),
-                            label: const Text('GO (+200\$)'),
+                            label: const Text('GO (+200£)'),
                             onPressed: () => playerProvider.passGo(player.id),
                           ),
                           ActionChip(
@@ -180,7 +180,7 @@ class PlayerListScreen extends StatelessWidget {
                           else
                             ActionChip(
                               avatar: const Icon(Icons.lock_open, size: 16, color: Colors.green),
-                              label: const Text('كفالة (50\$)'),
+                              label: const Text('كفالة (50£)'),
                               onPressed: () => playerProvider.releaseFromJail(player.id),
                             ),
                           if (!player.isBankrupt)
