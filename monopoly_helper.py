@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 from helper_functions import *
 from data_file import *
-
+from mini_games import create_mini_game
 
 class RangeSlider():
     def __init__(self, row, frame, min, max, name, is_doudble_slider=True, _temp_current_value=(0, 0), comment="", settings_key="", step=0.01):
@@ -100,10 +100,14 @@ class Tabview():
     
 class GameTab():
     def __init__(self, frame):
-        self.game_started = False
         # self.corner_radius = 18
-        self.current_stage = 1
         self.frame=frame
+        self.game_started = False
+
+        self.current_stage = 0
+        self.requested_steps = 1
+        self.last_turn_outcome = "answered"
+        self.current_mini_game = None
         self.pages = [self.add_steps_selection_page, self.add_games_page, self.add_results_page]
         self.go_to_next_page()
 
@@ -167,10 +171,8 @@ class GameTab():
                 # break
 
     def _on_steps_selected(self, n):
-        # TODO record number of steps in a variable
-        print("Steps/Difficulty selected: ", n)
+        self.requested_steps = n
         self.go_to_next_page()
-        # self.go_to_next_page()
 
     def add_games_page(self, remove_page=False):
         if remove_page:
@@ -179,9 +181,17 @@ class GameTab():
         self.games_page = tk.CTkFrame(self.frame, fg_color="transparent")
         self.games_page.pack(pady=10, fill="both", expand=True)
 
-        # select game here based on number of steps
+        # 1. Mini Game Frame
+        self.mini_game_frame = tk.CTkFrame(self.games_page, fg_color="transparent")
+        self.mini_game_frame.pack(fill="both", expand=True, padx=5, pady=(0, 10))
 
-
+        # 2. Select & launch mini-game based on steps difficulty
+        self.current_mini_game = create_mini_game(
+            parent=self.mini_game_frame,
+            steps=self.requested_steps,
+            on_result=self._on_mini_game_result,
+            on_timeout=self._on_mini_game_timeout
+        )
 
         self.navigation_frame = tk.CTkFrame(self.games_page, fg_color="transparent")
         self.navigation_frame.pack(padx=10, fill="x")
@@ -202,6 +212,26 @@ class GameTab():
                 # height=45, corner_radius=10, #command=self.
                 font=tk.CTkFont(family=GLOBAL_FONT_FAMILY+" Bold", size=16),)
             btn.grid(column=i, row=0, padx=4, sticky='ew')
+
+    def _on_mini_game_result(self, success: bool, reason: str):
+        if success:
+            if hasattr(self, 'btn_pay') and self.btn_pay:
+                self.btn_pay.configure(state="disabled", fg_color="#484f58")
+            if hasattr(self, 'btn_answer') and self.btn_answer:
+                self.btn_answer.configure(state="normal", fg_color="#238636")
+        else:
+            if hasattr(self, 'btn_answer') and self.btn_answer:
+                self.btn_answer.configure(state="disabled", fg_color="#484f58")
+
+    def _on_mini_game_timeout(self):
+        if hasattr(self, 'btn_answer') and self.btn_answer:
+            self.btn_answer.configure(state="disabled", fg_color="#484f58")
+
+    def _handle_turn_action(self, outcome: str):
+        self.last_turn_outcome = outcome
+        if hasattr(self, 'current_mini_game') and self.current_mini_game:
+            self.current_mini_game.stop_timer()
+        self.go_to_next_page()
     
     def add_results_page(self, remove_page=False):
         if remove_page:
@@ -209,6 +239,22 @@ class GameTab():
             return
         self.results_page = tk.CTkFrame(self.frame, fg_color="transparent")
         self.results_page.pack(pady=10, fill="both", expand=True)
+
+        if self.last_turn_outcome == "answered":
+            banner_box = tk.CTkFrame(self.results_page, fg_color="#1b4728", corner_radius=14, border_width=2, border_color="#2ea043")
+            banner_box.pack(fill="x", padx=10, pady=(0, 8), ipady=6)
+            banner_lbl = tk.CTkLabel(banner_box, text=fix_ar("🎉 ✨ أحسنت! تم اجتياز التحدي بنجاح 🌟 🎊"), font=tk.CTkFont(family=GLOBAL_FONT_FAMILY + " Bold", size=15), text_color="#7ee787")
+            banner_lbl.pack()
+        elif self.last_turn_outcome == "paid":
+            banner_box = tk.CTkFrame(self.results_page, fg_color="#3d2a10", corner_radius=14, border_width=2, border_color="#d29922")
+            banner_box.pack(fill="x", padx=10, pady=(0, 8), ipady=6)
+            banner_lbl = tk.CTkLabel(banner_box, text=fix_ar("💰 🪙 تم دفع الغرامة (20£) واستكمال الدور 💵"), font=tk.CTkFont(family=GLOBAL_FONT_FAMILY + " Bold", size=15), text_color="#f0b72f")
+            banner_lbl.pack()
+        else:
+            banner_box = tk.CTkFrame(self.results_page, fg_color="#3c181a", corner_radius=14, border_width=2, border_color="#f85149")
+            banner_box.pack(fill="x", padx=10, pady=(0, 8), ipady=6)
+            banner_lbl = tk.CTkLabel(banner_box, text=fix_ar("⛔ تم تفويت الدور بدون تحرك"), font=tk.CTkFont(family=GLOBAL_FONT_FAMILY + " Bold", size=15), text_color="#ff7b72")
+            banner_lbl.pack()
 
         # TODO Each path should have the image has the name of the city on it
         city_image = Image.open(get_path("assets\\images\\test.jpg"))
@@ -354,7 +400,7 @@ class App(tk.CTk):
 
         self.add_header_section()
 
-        self.tabview = Tabview(frame=self, padx=20, pady=(15, 10), active_idx=0, pages=["الإعدادات", "السوق", "اللعبة"])
+        self.tabview = Tabview(frame=self, padx=20, pady=(15, 10), active_idx=2, pages=["الإعدادات", "السوق", "اللعبة"])
         self.gametab = GameTab(self.tabview.get_tab(2))
 
         self.add_shop_page(self.tabview.get_tab(1))
@@ -466,8 +512,14 @@ class App(tk.CTk):
         self.title_label.pack(pady=(10, 10))
 
     def add_settings_page(self, frame):
-        frame.pack_configure(padx=30)
+        if frame.winfo_manager() == "pack":
+            frame.pack_configure(padx=0)
+        else:
+            frame.pack_configure(padx=0)
+            frame.pack_forget()
+
         self.settings_frame = tk.CTkScrollableFrame(frame, fg_color="transparent")
+        # self.settings_frame.pack_forget
         self.settings_frame.grid_columnconfigure(0, weight=0)
         self.settings_frame.grid_columnconfigure(1, weight=1)
         self.settings_frame.grid_columnconfigure(2, weight=0)
