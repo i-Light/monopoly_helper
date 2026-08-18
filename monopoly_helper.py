@@ -248,7 +248,7 @@ class GameTab():
             text=fix_ar("أدفع 120£ و " + "انهي الدور"), 
             font=tk.CTkFont(family=GLOBAL_FONT_FAMILY+" Bold", size=18),
             height=45, 
-            corner_radius=10, command=self.go_to_next_page()
+            corner_radius=10, command=self.go_to_next_page
         )
         btn4.pack(fill="x", padx=0, pady=(5, 0))
     
