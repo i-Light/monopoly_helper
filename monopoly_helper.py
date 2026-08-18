@@ -397,14 +397,6 @@ class App(tk.CTk):
         self.settings_frame.grid_columnconfigure(2, weight=1)
         self.settings_frame.pack(padx=0, pady=0,ipadx=10, fill="both", expand=True)
 
-        def change_color():
-            colors = colorchooser.askcolor(title="Tkinter Color Chooser")
-            self.settings_frame.configure(fg_color=colors[1])
-
-        btn = tk.CTkButton(self.settings_frame, text='Select a color', command=change_color).pack()
-
-
-        return
         self.settings_rows = get_next_row()
         self.player_settings = {}
 
