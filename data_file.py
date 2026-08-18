@@ -5,7 +5,6 @@ from helper_functions import get_path
 GLOBAL_FONT_FAMILY = "Playpen Sans Arabic"
 FONT_PATH = get_path("assets/fonts/PlaypenSansArabic-VariableFont_wght.ttf")
 
-# الإعدادات المثالية لخط Cairo
 reshaper = arabic_reshaper.ArabicReshaper(
     configuration={
         'delete_harakat': True,

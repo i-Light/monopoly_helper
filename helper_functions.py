@@ -1,42 +1,4 @@
 import os
-from modules.CTkRangeSlider import CTkRangeSlider as CTkRangeSlider
-
-class RangeSlider():
-    def __init__(self, tk, row, frame, min, max, name, is_doudble_slider=True, _temp_current_value=(0, 0), comment="", settings_key="", step=0.01):
-        self.is_double_slider = is_doudble_slider
-        self.name = name
-        self.step = (max-min)/step
-
-        self.settings_key                         = "value"
-        if settings_key:        self.settings_key = settings_key
-        elif is_doudble_slider: self.settings_key = "range"
-        
-        # change to be loaded from settings file
-        self.label = tk.CTkLabel(frame, text=name.replace("_", " ").capitalize() + (" (K)" if self.name == "minimum_subscribers" else ""))
-        self.label.grid(row=row, column=0, padx=20, pady=10, sticky="e")
-
-        self.range_value = [tk.DoubleVar(value=_temp_current_value[0]), tk.DoubleVar(value=_temp_current_value[1])]
-        self.range_value_range_slider = tk.CTkSlider(frame, from_=min, to=max, command= lambda x: self.range_slider_value_update((x, 0)), number_of_steps=self.step)
-        self.range_value_text1 = tk.CTkEntry(frame, width=50, textvariable=self.range_value[0])
-        self.range_value_text1.grid(row=row, column=1, padx=20, pady=10, sticky="ew")
-
-        if is_doudble_slider:
-            self.range_value_range_slider = CTkRangeSlider(frame, from_=min, to=max, command= lambda x: self.range_slider_value_update(x), number_of_steps=self.step)
-            self.range_value_range_slider.set([self.range_value[0].get(), self.range_value[1].get()])
-            self.range_value_text2 = tk.CTkEntry(frame, width=50, textvariable=self.range_value[1])
-            self.range_value_text2.grid(row=row, column=3, padx=20, pady=10, sticky="ew")
-        else:
-            self.range_value_range_slider.set(self.range_value[0].get())
-        
-        self.range_value_range_slider.grid(row=row, column=2, padx=20, pady=10, sticky="ew", columnspan=1 if is_doudble_slider else 2)
-
-    def range_slider_value_update(self, value):
-            result = (round(value[0]*100)/100, round(value[1]*100)/100)
-
-            # target_var_array = getattr(self, var_name_string)
-            self.range_value[0].set(result[0])
-            self.range_value[1].set(result[1])
-
 
 def auto_hide_scrollbar(tkinter_element, event=None):
     # Get the physical width of the visible canvas area

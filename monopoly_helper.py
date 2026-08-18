@@ -1,5 +1,6 @@
 from tkinter import Frame, Label, colorchooser
 import customtkinter as tk
+from modules.CTkRangeSlider import CTkRangeSlider as CTkRangeSlider
 import pyperclip
 # import os
 import math
@@ -7,6 +8,47 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 from helper_functions import *
 from data_file import *
+
+
+class RangeSlider():
+    def __init__(self, row, frame, min, max, name, is_doudble_slider=True, _temp_current_value=(0, 0), comment="", settings_key="", step=0.01):
+        self.is_double_slider = is_doudble_slider
+        self.name = name
+        self.step = (max-min)/step
+        self.is_whole_numbers = step.is_integer()
+
+        self.settings_key                         = "value"
+        if settings_key:        self.settings_key = settings_key
+        elif is_doudble_slider: self.settings_key = "range"
+        
+        # change to be loaded from settings file
+        self.label = tk.CTkLabel(frame, text=name.replace("_", " ").capitalize() + (" (K)" if self.name == "minimum_subscribers" else ""))
+        self.label.grid(row=row, column=0, padx=0, pady=10, sticky="e")
+
+        self.range_value = [tk.DoubleVar(value=_temp_current_value[0]), tk.DoubleVar(value=_temp_current_value[1])]
+        if self.is_whole_numbers:
+            self.range_value = [tk.IntVar(value=_temp_current_value[0]), tk.IntVar(value=_temp_current_value[1])]
+            
+        self.range_value_range_slider = tk.CTkSlider(frame, from_=min, to=max, command= lambda x: self.range_slider_value_update((x, 0)), number_of_steps=self.step)
+        self.range_value_text1 = tk.CTkEntry(frame, width=50, textvariable=self.range_value[0])
+        self.range_value_text1.grid(row=row, column=1, padx=10, pady=10, sticky="ew")
+
+        if is_doudble_slider:
+            self.range_value_range_slider = CTkRangeSlider(frame, from_=min, to=max, command= lambda x: self.range_slider_value_update(x), number_of_steps=self.step)
+            self.range_value_range_slider.set([self.range_value[0].get(), self.range_value[1].get()])
+            self.range_value_text2 = tk.CTkEntry(frame, width=50, textvariable=self.range_value[1])
+            self.range_value_text2.grid(row=row, column=3, padx=0, pady=10, sticky="ew")
+        else:
+            self.range_value_range_slider.set(self.range_value[0].get())
+        
+        self.range_value_range_slider.grid(row=row, column=2, padx=0, pady=10, sticky="ew", columnspan=1 if is_doudble_slider else 2)
+
+    def range_slider_value_update(self, value):
+            result = (round(value[0]*100)/100, round(value[1]*100)/100)
+
+            # target_var_array = getattr(self, var_name_string)
+            self.range_value[0].set(result[0] if not self.is_whole_numbers else int(result[0]))
+            self.range_value[1].set(result[1] if not self.is_whole_numbers else int(result[1]))
 
 
 
@@ -60,9 +102,9 @@ class GameTab():
     def __init__(self, frame):
         self.game_started = False
         # self.corner_radius = 18
-        self.current_stage = 0
+        self.current_stage = 1
         self.frame=frame
-        self.pages = [self.add_steps_selection_page, self.add_results_page]
+        self.pages = [self.add_steps_selection_page, self.add_games_page, self.add_results_page]
         self.go_to_next_page()
 
     def go_to_next_page(self):
@@ -130,12 +172,43 @@ class GameTab():
         self.go_to_next_page()
         # self.go_to_next_page()
 
+    def add_games_page(self, remove_page=False):
+        if remove_page:
+            if self.games_page: self.games_page.destroy()
+            return
+        self.games_page = tk.CTkFrame(self.frame, fg_color="transparent")
+        self.games_page.pack(pady=10, fill="both", expand=True)
+
+        # select game here based on number of steps
+
+
+
+        self.navigation_frame = tk.CTkFrame(self.games_page, fg_color="transparent")
+        self.navigation_frame.pack(padx=10, fill="x")
+
+        btn_settings = [[
+                'أخسر الدور'
+                f'أدفع {20}£',
+                'جاوب',
+            ],
+            [
+                self.go_to_next_page, #TODO change this to not make the player move
+                self.go_to_next_page,
+                self.go_to_next_page,
+            ]]
+        for i in range(3):
+            self.navigation_frame.grid_columnconfigure(i, weight=1)
+            btn = tk.CTkButton( self.navigation_frame, text=fix_ar(btn_settings[0][i]), command=btn_settings[1][i],
+                # height=45, corner_radius=10, #command=self.
+                font=tk.CTkFont(family=GLOBAL_FONT_FAMILY+" Bold", size=16),)
+            btn.grid(column=i, row=0, padx=4, sticky='ew')
+    
     def add_results_page(self, remove_page=False):
         if remove_page:
-            if self.results: self.results.destroy()
+            if self.results_page: self.results_page.destroy()
             return
-        self.results = tk.CTkFrame(self.frame, fg_color="transparent")
-        self.results.pack(pady=10, fill="both", expand=True)
+        self.results_page = tk.CTkFrame(self.frame, fg_color="transparent")
+        self.results_page.pack(pady=10, fill="both", expand=True)
 
         # TODO Each path should have the image has the name of the city on it
         city_image = Image.open(get_path("assets\\images\\test.jpg"))
@@ -143,7 +216,7 @@ class GameTab():
         # ==========================================
         # 1. Header (Title and Player Badge)
         # ==========================================
-        header_frame = tk.CTkFrame(self.results, fg_color="transparent")
+        header_frame = tk.CTkFrame(self.results_page, fg_color="transparent")
         header_frame.pack(fill="x", pady=(0, 0))
 
         # Title
@@ -188,7 +261,7 @@ class GameTab():
         # 2. Image Area (With Overlapping Elements)
         # ==========================================
         # We use a fixed-size transparent wrapper to safely overlap widgets
-        wrapper = tk.CTkFrame(self.results, fg_color="transparent", height=50)
+        wrapper = tk.CTkFrame(self.results_page, fg_color="transparent", height=50)
         wrapper.pack(fill='both', expand=True)
         wrapper.pack_propagate(False) # Prevent it from resizing to fit children
 
@@ -212,7 +285,7 @@ class GameTab():
 
         # Button 1 (Disabled Style)
         btn1 = tk.CTkButton(
-            self.results, 
+            self.results_page, 
             text="Bought Country ✅", 
             font=btn_font,
             fg_color="#878787", 
@@ -224,7 +297,7 @@ class GameTab():
         btn1.pack(fill="x", padx=0, pady=(5, 5))
 
         btn2 = tk.CTkButton(
-            self.results, 
+            self.results_page, 
             text="Bought Garage ✅", 
             font=btn_font,
             fg_color="#878787", 
@@ -237,7 +310,7 @@ class GameTab():
 
         btn3_text = "Buy Market  Price: 600£   Fee: 200£"
         btn3 = tk.CTkButton(
-            self.results, 
+            self.results_page, 
             text=btn3_text, 
             font=btn_font,
             height=45, 
@@ -246,7 +319,7 @@ class GameTab():
         btn3.pack(fill="x", padx=0, pady=(5, 5))
 
         btn4 = tk.CTkButton(
-            self.results, 
+            self.results_page, 
             text=fix_ar("أدفع 120£ و " + "انهي الدور"), 
             font=tk.CTkFont(family=GLOBAL_FONT_FAMILY+" Bold", size=18),
             height=45, 
@@ -262,11 +335,14 @@ class App(tk.CTk):
         # self.screen_size = [720, 1600]; self.screen_size[0]*=1000/1600; self.screen_size[1]*=1000/1600
         # def fix_size_ratio(obj, ratio): return [int(obj[0]*ratio), int(obj[1]*ratio)]
 
+        # PUT a condition to run the weird custom workarounds for windows, maybe do os.iswindows or something like that
+
         self.screen_size = [720, 1600]
         self.screen_pos = [-449, 0]
         self.geometry(f"{self.screen_size[0]}x{self.screen_size[1]}+{self.screen_pos[0]}+{self.screen_pos[1]}")
         self.configure(fg_color="#282c34")
-        self.pack_propagate(False)
+        self.minsize(self.screen_size[0], self.screen_size[1])
+        # self.pack_propagate(False)
         _original_init = tk.CTkFont.__init__
         def _custom_init(self, *args, **kwargs):
             if "family" not in kwargs or kwargs["family"] is None: kwargs["family"] = GLOBAL_FONT_FAMILY
@@ -391,10 +467,10 @@ class App(tk.CTk):
 
     def add_settings_page(self, frame):
         frame.pack_configure(padx=30)
-        self.settings_frame = tk.CTkScrollableFrame(frame, fg_color="#000")
+        self.settings_frame = tk.CTkScrollableFrame(frame, fg_color="transparent")
         self.settings_frame.grid_columnconfigure(0, weight=0)
         self.settings_frame.grid_columnconfigure(1, weight=1)
-        self.settings_frame.grid_columnconfigure(2, weight=1)
+        self.settings_frame.grid_columnconfigure(2, weight=0)
         self.settings_frame.pack(padx=0, pady=0,ipadx=10, fill="both", expand=True)
 
         self.settings_rows = get_next_row()
@@ -403,15 +479,31 @@ class App(tk.CTk):
         for player in players_stats:
             player_settings_rows = self.settings_rows.next()
             idx_str=str(player["idx"]+1)
-            self.player_settings['name_variable'+idx_str] = tk.StringVar(value="")
+            self.player_settings['name_variable'+idx_str] = tk.StringVar(value=player['name'])
             self.player_settings['name_label'+idx_str] = tk.CTkLabel(self.settings_frame,
                                 text="Player".replace("_", " ").capitalize()+idx_str)
             self.player_settings['name_label'+idx_str].grid(row=player_settings_rows,
-                                column=0, padx=10, pady=10, sticky="e")
+                                column=0, padx=10, pady=5, sticky="e")
             self.player_settings['name_value'+idx_str] = tk.CTkEntry(self.settings_frame,
                                                 height=10, textvariable=self.player_settings['name_variable'+idx_str])
             self.player_settings['name_value'+idx_str].grid(row=player_settings_rows,
-                                column=1, padx=10, pady=10, sticky="ew")#, columnspan=1)
+                                column=1, padx=10, pady=5, sticky="ew")#, columnspan=1)
+            self.remove_player_button = tk.CTkButton(self.settings_frame, text="X",
+                width=30, border_width=4, fg_color="#742c2c", border_color="#3d1111", hover_color="#3d1111", corner_radius=14)
+            self.remove_player_button.grid(row=player_settings_rows,
+                column=2, padx=10, pady=5, sticky="w", )#, columnspan=1)
+        self.add_more_players = tk.CTkButton(self.settings_frame, text=fix_ar("اضافة شخص لقايمة اللاعبين +"),
+            font=(GLOBAL_FONT_FAMILY+" Bold", 13), width=30, corner_radius=14)
+        self.add_more_players.grid(row=self.settings_rows.next(),
+            column=0, padx=10, pady=5, sticky="we", columnspan=3)
+
+        self.sliders_frame = tk.CTkFrame(self.settings_frame, fg_color="transparent")
+        self.sliders_frame.grid(sticky='ew', columnspan=3, padx=10, pady=10)
+        self.sliders_frame.grid_columnconfigure(2, weight=1)
+        self.sliders_rows = get_next_row()
+        self.timer_settings = RangeSlider(self.sliders_rows.next(), self.sliders_frame,
+            0, 180, "عدد دقايق اللعب", False, (90, 0), step=5)
+
 
 
     def add_madeby_section(self):
@@ -440,6 +532,7 @@ class App(tk.CTk):
             
             # bounds[0] is the left edge of the image.
             # If it's greater than the canvas width, it has fully exited the right side of the screen.
+            #TODO on reset make it change the word
             if bounds[0] > canvas_width:
                 
                 # Calculate the width of the image to know how far back to push it
