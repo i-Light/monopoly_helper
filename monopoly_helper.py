@@ -12,6 +12,7 @@ from data_file import *
 
 class Tabview():
     def __init__(self, frame, padx, pady, active_idx, pages, corner_radius=18):
+        self.padx=padx; self.pady=pady
         self.frame = frame
         self.pages = [fix_ar(page) for page in pages]
 
@@ -31,7 +32,6 @@ class Tabview():
         )
 
         self.bottom_tabs.set(self.pages[active_idx]) # تحديد الصفحة الافتراضية
-        self.active_page = self.pages[active_idx]
         self.bottom_tabs.grid(row=1, column=0, sticky="ew", padx=padx, pady=(0, 15), ipady=5)
 
         self.content_frames = {}
@@ -43,12 +43,14 @@ class Tabview():
             tclr = "#282c34"
             # print(tclr)
             self.content_frames[page_name] = tk.CTkFrame(self.tab_container, fg_color=tclr, corner_radius=corner_radius)
-            self.content_frames[page_name].grid(row=0, column=0, sticky="nsew", padx=padx, pady=pady)
+
+        self.active_page = self.pages[active_idx]
+        self.switch_tab(self.pages[active_idx])
 
 
     def switch_tab(self, new_selected_page_name):
         self.content_frames[self.active_page].grid_remove()
-        self.content_frames[new_selected_page_name].grid()
+        self.content_frames[new_selected_page_name].grid(row=0, column=0, sticky="nsew", padx=self.padx, pady=self.pady)
         self.active_page=new_selected_page_name
 
     def get_tab(self, idx):
@@ -251,7 +253,7 @@ class GameTab():
             corner_radius=10, command=self.go_to_next_page
         )
         btn4.pack(fill="x", padx=0, pady=(5, 0))
-    
+
 class App(tk.CTk):
     def __init__(self):
         super().__init__()
@@ -275,8 +277,11 @@ class App(tk.CTk):
 
         self.add_header_section()
 
-        self.tabview = Tabview(frame=self, padx=20, pady=(15, 10), active_idx=2, pages=["الإعدادات", "السوق", "اللعبة"])
+        self.tabview = Tabview(frame=self, padx=20, pady=(15, 10), active_idx=0, pages=["الإعدادات", "السوق", "اللعبة"])
         self.gametab = GameTab(self.tabview.get_tab(2))
+
+        self.add_shop_page(self.tabview.get_tab(1))
+        self.add_settings_page(self.tabview.get_tab(0))
         
         # --- Made by section ---
         self.add_madeby_section()
@@ -367,6 +372,37 @@ class App(tk.CTk):
             text=place_name
         )
         self.player_header_frames["city" + sidx].grid(row=1, column=idx, padx=10, sticky="nwe")
+
+    def add_shop_page(self, frame):
+        self.title_label = tk.CTkLabel(
+            frame, 
+            text="""
+الصفحة دى ملهاش داعي حاليا
+لأن اغلب الوقت بنكون محتاجين
+نشتري ونبيع فقط واحنا واقفين على البلد
+هنسيب تنفيذها لما نحتاج نشيل حاجه اتحطت بالغلط
+او مثلا مضطرين نبيع حاجه عشان نقدر نتحرك
+""",
+            font=tk.CTkFont(size=16),
+            justify="center",
+            text_color="#FFFFFF"
+        )
+        self.title_label.pack(pady=(10, 10))
+
+    def add_settings_page(self, frame):
+        self.settings_frame = tk.CTkScrollableFrame(frame, fg_color="transparent")
+        # self.settings_frame.grid_columnconfigure(2, weight=6)
+        self.settings_frame.pack(padx=0, pady=0, fill="both", expand=True)
+
+        self.settings_rows = get_next_row()
+
+        self.proxy_login_user_row = self.settings_rows.next()
+        self.proxy_login_user_value = tk.StringVar(value="")
+        self.proxy_login_user_label = tk.CTkLabel(self.settings_frame, text="proxy_login_user".replace("_", " ").capitalize())
+        self.proxy_login_user_label.grid(row=self.proxy_login_user_row, column=0, padx=20, pady=10, sticky="e")
+        # self.proxy_login_user_value_text = tk.CTkEntry(self.settings_frame, width=50, textvariable=self.proxy_login_user_value)
+        # self.proxy_login_user_value_text.grid(row=self.proxy_login_user_row, column=1, padx=20, pady=10, sticky="ew", columnspan=1)
+
 
     def add_madeby_section(self):
         self.madebyframe = tk.CTkFrame(self, width=200, height=200, fg_color="transparent")
