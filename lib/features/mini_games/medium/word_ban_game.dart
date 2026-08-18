@@ -1,0 +1,123 @@
+import 'package:flutter/material.dart';
+import '../core/base_mini_game.dart';
+import '../core/mini_game_difficulty.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/game_constants.dart';
+import '../../../core/widgets/custom_card.dart';
+import '../../../data/datasets/word_ban_data.dart';
+
+class WordBanGame extends BaseMiniGame {
+  WordBanCard? _currentChallenge;
+
+  WordBanGame()
+      : super(
+          id: 'word_ban',
+          title: AppStrings.gameWordBanTitle,
+          description: AppStrings.gameWordBanDesc,
+          rules: 'اشرح الكلمة الرئيسية لزملائك ليخمّنوها دون نطق الكلمة نفسها أو أي من الكلمات المحظورة الخمس!',
+          difficulty: MiniGameDifficulty.medium,
+          timeLimitSeconds: GameConstants.wordBanTime,
+          rewardAmount: GameConstants.mediumReward,
+          penaltyAmount: GameConstants.mediumPenalty,
+          icon: Icons.block,
+        );
+
+  @override
+  void generateNewChallenge() {
+    _currentChallenge = WordBanData.getRandom();
+  }
+
+  @override
+  Widget buildChallengeWidget(
+    BuildContext context, {
+    required VoidCallback onGameWon,
+    required VoidCallback onGameLost,
+  }) {
+    if (_currentChallenge == null) generateNewChallenge();
+    final card = _currentChallenge!;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomCard(
+          color: AppColors.mediumTier.withOpacity(0.15),
+          borderColor: AppColors.mediumTier,
+          child: Column(
+            children: [
+              const Text(
+                'الكلمة المطلوب شرحها (Target):',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                card.targetWord,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.cashGold,
+                ),
+              ),
+              Text(
+                'التصنيف: ${card.category}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        CustomCard(
+          borderColor: AppColors.error.withOpacity(0.6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.warning_amber, color: AppColors.error, size: 18),
+                  SizedBox(width: 6),
+                  Text(
+                    'الكلمات المحظورة تماماً (ممنوع نطقها):',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.error),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: card.forbiddenWords
+                    .map((w) => Chip(
+                          label: Text(
+                            w,
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                          backgroundColor: AppColors.error.withOpacity(0.25),
+                          side: const BorderSide(color: AppColors.error, width: 1),
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton.icon(
+              onPressed: onGameWon,
+              icon: const Icon(Icons.check),
+              label: const Text('خمنوها بنجاح'),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.success),
+            ),
+            ElevatedButton.icon(
+              onPressed: onGameLost,
+              icon: const Icon(Icons.close),
+              label: const Text('نطق محظور / إخفاق'),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

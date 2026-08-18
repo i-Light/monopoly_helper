@@ -1,0 +1,11 @@
+{
+  "name": "مساعد مونوبولي | Monopoly Helper",
+  "short_name": "MonopolyHelper",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#12181B",
+  "theme_color": "#1E88E5",
+  "description": "Smart Monopoly Banking & 14 Interactive Mini-Games Suite",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}
