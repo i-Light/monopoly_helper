@@ -1,9 +1,8 @@
 import os
-import customtkinter as tk
 from modules.CTkRangeSlider import CTkRangeSlider as CTkRangeSlider
 
 class RangeSlider():
-    def __init__(self, row, frame, min, max, name, is_doudble_slider=True, _temp_current_value=(0, 0), comment="", settings_key="", step=0.01):
+    def __init__(self, tk, row, frame, min, max, name, is_doudble_slider=True, _temp_current_value=(0, 0), comment="", settings_key="", step=0.01):
         self.is_double_slider = is_doudble_slider
         self.name = name
         self.step = (max-min)/step

@@ -1,4 +1,4 @@
-from tkinter import Frame, Label
+from tkinter import Frame, Label, colorchooser
 import customtkinter as tk
 import pyperclip
 # import os
@@ -17,9 +17,8 @@ class Tabview():
         self.pages = [fix_ar(page) for page in pages]
 
         self.tab_container = tk.CTkFrame(self.frame, fg_color="transparent", corner_radius=0)
-        self.tab_container.pack(padx=0, pady=0, fill="both", expand=True)
-        self.tab_container.grid_rowconfigure(0, weight=1)
-        self.tab_container.grid_columnconfigure(0, weight=1)
+        self.tab_container.pack(padx=0, pady=(0, 15), fill="both", expand=True)
+        # self.tab_container.pack_forget
 
         self.bottom_tabs = tk.CTkSegmentedButton(
             self.tab_container,
@@ -32,7 +31,8 @@ class Tabview():
         )
 
         self.bottom_tabs.set(self.pages[active_idx]) # تحديد الصفحة الافتراضية
-        self.bottom_tabs.grid(row=1, column=0, sticky="ew", padx=padx, pady=(0, 15), ipady=5)
+        self.bottom_tabs.pack(padx=10, pady=(0, 15), ipady=8, fill="x")
+        # .grid(row=1, column=0, sticky="ew", padx=padx, pady=(0, 15))
 
         self.content_frames = {}
 
@@ -49,8 +49,8 @@ class Tabview():
 
 
     def switch_tab(self, new_selected_page_name):
-        self.content_frames[self.active_page].grid_remove()
-        self.content_frames[new_selected_page_name].grid(row=0, column=0, sticky="nsew", padx=self.padx, pady=self.pady)
+        self.content_frames[self.active_page].pack_forget()
+        self.content_frames[new_selected_page_name].pack(padx=0, pady=self.pady, fill="both", expand=True, before=self.bottom_tabs)
         self.active_page=new_selected_page_name
 
     def get_tab(self, idx):
@@ -266,6 +266,7 @@ class App(tk.CTk):
         self.screen_pos = [-449, 0]
         self.geometry(f"{self.screen_size[0]}x{self.screen_size[1]}+{self.screen_pos[0]}+{self.screen_pos[1]}")
         self.configure(fg_color="#282c34")
+        self.pack_propagate(False)
         _original_init = tk.CTkFont.__init__
         def _custom_init(self, *args, **kwargs):
             if "family" not in kwargs or kwargs["family"] is None: kwargs["family"] = GLOBAL_FONT_FAMILY
@@ -287,7 +288,6 @@ class App(tk.CTk):
         self.add_madeby_section()
 
     # ----- Pages -----
-
 
     def add_header_section(self):
         raw_text="كلمتان حبيبتان إلى الرحمن خفيفتان على اللسان ثقيلتان في الميزان... سبحان الله وبحمده سبحان الله العظيم"
@@ -390,18 +390,36 @@ class App(tk.CTk):
         self.title_label.pack(pady=(10, 10))
 
     def add_settings_page(self, frame):
-        self.settings_frame = tk.CTkScrollableFrame(frame, fg_color="transparent")
-        # self.settings_frame.grid_columnconfigure(2, weight=6)
-        self.settings_frame.pack(padx=0, pady=0, fill="both", expand=True)
+        frame.pack_configure(padx=30)
+        self.settings_frame = tk.CTkScrollableFrame(frame, fg_color="#000")
+        self.settings_frame.grid_columnconfigure(0, weight=0)
+        self.settings_frame.grid_columnconfigure(1, weight=1)
+        self.settings_frame.grid_columnconfigure(2, weight=1)
+        self.settings_frame.pack(padx=0, pady=0,ipadx=10, fill="both", expand=True)
 
+        def change_color():
+            colors = colorchooser.askcolor(title="Tkinter Color Chooser")
+            self.settings_frame.configure(fg_color=colors[1])
+
+        btn = tk.CTkButton(self.settings_frame, text='Select a color', command=change_color).pack()
+
+
+        return
         self.settings_rows = get_next_row()
+        self.player_settings = {}
 
-        self.proxy_login_user_row = self.settings_rows.next()
-        self.proxy_login_user_value = tk.StringVar(value="")
-        self.proxy_login_user_label = tk.CTkLabel(self.settings_frame, text="proxy_login_user".replace("_", " ").capitalize())
-        self.proxy_login_user_label.grid(row=self.proxy_login_user_row, column=0, padx=20, pady=10, sticky="e")
-        # self.proxy_login_user_value_text = tk.CTkEntry(self.settings_frame, width=50, textvariable=self.proxy_login_user_value)
-        # self.proxy_login_user_value_text.grid(row=self.proxy_login_user_row, column=1, padx=20, pady=10, sticky="ew", columnspan=1)
+        for player in players_stats:
+            player_settings_rows = self.settings_rows.next()
+            idx_str=str(player["idx"]+1)
+            self.player_settings['name_variable'+idx_str] = tk.StringVar(value="")
+            self.player_settings['name_label'+idx_str] = tk.CTkLabel(self.settings_frame,
+                                text="Player".replace("_", " ").capitalize()+idx_str)
+            self.player_settings['name_label'+idx_str].grid(row=player_settings_rows,
+                                column=0, padx=10, pady=10, sticky="e")
+            self.player_settings['name_value'+idx_str] = tk.CTkEntry(self.settings_frame,
+                                                height=10, textvariable=self.player_settings['name_variable'+idx_str])
+            self.player_settings['name_value'+idx_str].grid(row=player_settings_rows,
+                                column=1, padx=10, pady=10, sticky="ew")#, columnspan=1)
 
 
     def add_madeby_section(self):
