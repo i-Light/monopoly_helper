@@ -41,7 +41,7 @@ class SpeedMathGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.easyTier.withOpacity(0.12),
+          color: AppColors.easyTier.withValues(alpha: 0.12),
           borderColor: AppColors.easyTier,
           child: Column(
             children: [

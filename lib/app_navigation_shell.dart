@@ -91,7 +91,7 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
           bottomNavigationBar: NavigationBar(
             selectedIndex: _currentIndex,
             onDestinationSelected: (idx) => setState(() => _currentIndex = idx),
-            indicatorColor: AppColors.primary.withOpacity(0.25),
+            indicatorColor: AppColors.primary.withValues(alpha: 0.25),
             destinations: const [
               NavigationDestination(
                 icon: Icon(Icons.dashboard_outlined),

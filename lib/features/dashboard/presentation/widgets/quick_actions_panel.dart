@@ -30,7 +30,7 @@ class QuickActionsPanel extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: currentPlayer.color.withOpacity(0.18),
+                    color: currentPlayer.color.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: currentPlayer.color),
                   ),

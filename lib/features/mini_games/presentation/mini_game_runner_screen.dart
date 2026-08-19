@@ -98,7 +98,7 @@ class _MiniGameRunnerScreenState extends State<MiniGameRunnerScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: (isWon ? AppColors.success : AppColors.error).withOpacity(0.15),
+                color: (isWon ? AppColors.success : AppColors.error).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: isWon ? AppColors.success : AppColors.error),
               ),

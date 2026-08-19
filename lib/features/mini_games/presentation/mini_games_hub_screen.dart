@@ -70,7 +70,7 @@ class _MiniGamesHubScreenState extends State<MiniGamesHubScreen> {
                   FilterChip(
                     label: const Text(AppStrings.easy),
                     selected: _selectedDifficulty == MiniGameDifficulty.easy,
-                    selectedColor: AppColors.easyTier.withOpacity(0.25),
+                    selectedColor: AppColors.easyTier.withValues(alpha: 0.25),
                     checkmarkColor: AppColors.easyTier,
                     onSelected: (_) => setState(() => _selectedDifficulty = MiniGameDifficulty.easy),
                   ),
@@ -78,7 +78,7 @@ class _MiniGamesHubScreenState extends State<MiniGamesHubScreen> {
                   FilterChip(
                     label: const Text(AppStrings.medium),
                     selected: _selectedDifficulty == MiniGameDifficulty.medium,
-                    selectedColor: AppColors.mediumTier.withOpacity(0.25),
+                    selectedColor: AppColors.mediumTier.withValues(alpha: 0.25),
                     checkmarkColor: AppColors.mediumTier,
                     onSelected: (_) => setState(() => _selectedDifficulty = MiniGameDifficulty.medium),
                   ),
@@ -86,7 +86,7 @@ class _MiniGamesHubScreenState extends State<MiniGamesHubScreen> {
                   FilterChip(
                     label: const Text(AppStrings.hard),
                     selected: _selectedDifficulty == MiniGameDifficulty.hard,
-                    selectedColor: AppColors.hardTier.withOpacity(0.25),
+                    selectedColor: AppColors.hardTier.withValues(alpha: 0.25),
                     checkmarkColor: AppColors.hardTier,
                     onSelected: (_) => setState(() => _selectedDifficulty = MiniGameDifficulty.hard),
                   ),
@@ -130,7 +130,7 @@ class _MiniGamesHubScreenState extends State<MiniGamesHubScreen> {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: game.difficulty.color.withOpacity(0.18),
+                          color: game.difficulty.color.withValues(alpha: 0.18),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(game.icon, color: game.difficulty.color, size: 28),

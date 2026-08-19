@@ -41,7 +41,7 @@ class LastLetterWordChainGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.mediumTier.withOpacity(0.12),
+          color: AppColors.mediumTier.withValues(alpha: 0.12),
           borderColor: AppColors.mediumTier,
           child: Column(
             children: [

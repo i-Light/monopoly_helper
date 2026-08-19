@@ -41,7 +41,7 @@ class TongueTwistersGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.hardTier.withOpacity(0.12),
+          color: AppColors.hardTier.withValues(alpha: 0.12),
           borderColor: AppColors.hardTier,
           child: Column(
             children: [

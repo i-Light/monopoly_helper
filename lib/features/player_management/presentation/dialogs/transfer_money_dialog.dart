@@ -56,7 +56,7 @@ class _TransferMoneyDialogState extends State<TransferMoneyDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DropdownButtonFormField<String>(
-              value: _fromPlayerId,
+              initialValue: _fromPlayerId,
               decoration: const InputDecoration(labelText: AppStrings.fromPlayer),
               items: players
                   .map((p) => DropdownMenuItem(
@@ -68,7 +68,7 @@ class _TransferMoneyDialogState extends State<TransferMoneyDialog> {
             ),
             const SizedBox(height: 14),
             DropdownButtonFormField<String>(
-              value: _toPlayerId,
+              initialValue: _toPlayerId,
               decoration: const InputDecoration(labelText: AppStrings.toPlayer),
               items: players
                   .map((p) => DropdownMenuItem(

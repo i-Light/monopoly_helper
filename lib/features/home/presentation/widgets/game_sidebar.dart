@@ -36,7 +36,7 @@ class GameSidebar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withValues(alpha: 0.08),
               border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
             ),
             child: Row(
@@ -87,7 +87,7 @@ class GameSidebar extends StatelessWidget {
                   FilterChip(
                     label: const Text(AppStrings.easy, style: TextStyle(fontSize: 12)),
                     selected: gameState.selectedDifficulty == MiniGameDifficulty.easy,
-                    selectedColor: AppColors.easyTier.withOpacity(0.25),
+                    selectedColor: AppColors.easyTier.withValues(alpha: 0.25),
                     showCheckmark: false,
                     onSelected: (_) => gameState.setDifficultyFilter(MiniGameDifficulty.easy),
                   ),
@@ -95,7 +95,7 @@ class GameSidebar extends StatelessWidget {
                   FilterChip(
                     label: const Text(AppStrings.medium, style: TextStyle(fontSize: 12)),
                     selected: gameState.selectedDifficulty == MiniGameDifficulty.medium,
-                    selectedColor: AppColors.mediumTier.withOpacity(0.25),
+                    selectedColor: AppColors.mediumTier.withValues(alpha: 0.25),
                     showCheckmark: false,
                     onSelected: (_) => gameState.setDifficultyFilter(MiniGameDifficulty.medium),
                   ),
@@ -103,7 +103,7 @@ class GameSidebar extends StatelessWidget {
                   FilterChip(
                     label: const Text(AppStrings.hard, style: TextStyle(fontSize: 12)),
                     selected: gameState.selectedDifficulty == MiniGameDifficulty.hard,
-                    selectedColor: AppColors.hardTier.withOpacity(0.25),
+                    selectedColor: AppColors.hardTier.withValues(alpha: 0.25),
                     showCheckmark: false,
                     onSelected: (_) => gameState.setDifficultyFilter(MiniGameDifficulty.hard),
                   ),
@@ -146,7 +146,7 @@ class GameSidebar extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
                   child: Material(
-                    color: isSelected ? game.difficulty.color.withOpacity(0.16) : Colors.transparent,
+                    color: isSelected ? game.difficulty.color.withValues(alpha: 0.16) : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),

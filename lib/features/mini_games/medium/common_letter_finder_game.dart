@@ -41,7 +41,7 @@ class CommonLetterFinderGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.mediumTier.withOpacity(0.12),
+          color: AppColors.mediumTier.withValues(alpha: 0.12),
           borderColor: AppColors.mediumTier,
           child: Column(
             children: [
@@ -60,7 +60,7 @@ class CommonLetterFinderGame extends BaseMiniGame {
                           decoration: BoxDecoration(
                             color: AppColors.darkCard,
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.mediumTier.withOpacity(0.5)),
+                            border: Border.all(color: AppColors.mediumTier.withValues(alpha: 0.5)),
                           ),
                           child: Text(
                             w,

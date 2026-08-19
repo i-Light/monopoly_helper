@@ -42,7 +42,7 @@ class FastStopBusGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.easyTier.withOpacity(0.12),
+          color: AppColors.easyTier.withValues(alpha: 0.12),
           borderColor: AppColors.easyTier,
           child: Column(
             children: [
@@ -59,7 +59,7 @@ class FastStopBusGame extends BaseMiniGame {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.easyTier.withOpacity(0.4),
+                      color: AppColors.easyTier.withValues(alpha: 0.4),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),

@@ -21,8 +21,8 @@ class GlassContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveColor = color ?? (isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04));
-    final effectiveBorder = borderColor ?? (isDark ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.08));
+    final effectiveColor = color ?? (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04));
+    final effectiveBorder = borderColor ?? (isDark ? Colors.white.withValues(alpha: 0.12) : Colors.black.withValues(alpha: 0.08));
 
     return Container(
       margin: margin,

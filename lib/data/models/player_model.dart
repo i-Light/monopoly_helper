@@ -57,7 +57,7 @@ class PlayerModel {
     return {
       'id': id,
       'name': name,
-      'colorValue': color.value,
+      'colorValue': color.toARGB32(),
       'balance': balance,
       'properties': properties,
       'isInJail': isInJail,

@@ -86,7 +86,7 @@ class CardsDeckScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: (isChance ? AppColors.chanceOrange : AppColors.communityBlue).withOpacity(0.4),
+                      color: (isChance ? AppColors.chanceOrange : AppColors.communityBlue).withValues(alpha: 0.4),
                       blurRadius: 16,
                       offset: const Offset(0, 8),
                     ),

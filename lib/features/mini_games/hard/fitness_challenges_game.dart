@@ -41,7 +41,7 @@ class FitnessChallengesGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.hardTier.withOpacity(0.12),
+          color: AppColors.hardTier.withValues(alpha: 0.12),
           borderColor: AppColors.hardTier,
           child: Column(
             children: [
@@ -56,7 +56,7 @@ class FitnessChallengesGame extends BaseMiniGame {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withOpacity(0.2),
+                  color: AppColors.secondary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.secondary),
                 ),

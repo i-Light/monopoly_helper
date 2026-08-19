@@ -41,7 +41,7 @@ class DoubleConstraintWordGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.hardTier.withOpacity(0.12),
+          color: AppColors.hardTier.withValues(alpha: 0.12),
           borderColor: AppColors.hardTier,
           child: Column(
             children: [
@@ -119,7 +119,7 @@ class DoubleConstraintWordGame extends BaseMiniGame {
                 child: Wrap(
                   spacing: 6,
                   children: item.exampleSolutions
-                      .map((s) => Chip(label: Text(s), backgroundColor: AppColors.hardTier.withOpacity(0.15)))
+                      .map((s) => Chip(label: Text(s), backgroundColor: AppColors.hardTier.withValues(alpha: 0.15)))
                       .toList(),
                 ),
               ),

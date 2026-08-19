@@ -41,7 +41,7 @@ class CommonQuestionsLogicGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.mediumTier.withOpacity(0.12),
+          color: AppColors.mediumTier.withValues(alpha: 0.12),
           borderColor: AppColors.mediumTier,
           child: Column(
             children: [
@@ -51,7 +51,7 @@ class CommonQuestionsLogicGame extends BaseMiniGame {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.mediumTier.withOpacity(0.2),
+                      color: AppColors.mediumTier.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -96,7 +96,7 @@ class CommonQuestionsLogicGame extends BaseMiniGame {
                 children: [
                   CircleAvatar(
                     radius: 13,
-                    backgroundColor: AppColors.mediumTier.withOpacity(0.2),
+                    backgroundColor: AppColors.mediumTier.withValues(alpha: 0.2),
                     child: Text(
                       '${idx + 1}',
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.mediumTier),

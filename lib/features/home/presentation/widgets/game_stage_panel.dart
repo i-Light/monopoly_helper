@@ -44,7 +44,7 @@ class GameStagePanel extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: game.difficulty.color.withOpacity(0.15),
+                                  color: game.difficulty.color.withValues(alpha: 0.15),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(game.icon, color: game.difficulty.color, size: 28),
@@ -118,7 +118,7 @@ class GameStagePanel extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: game.difficulty.color.withOpacity(0.15),
+                              color: game.difficulty.color.withValues(alpha: 0.15),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(game.icon, color: game.difficulty.color, size: 36),
@@ -213,7 +213,7 @@ class GameStagePanel extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: game.difficulty.color.withOpacity(0.35), width: 1.5),
+                  border: Border.all(color: game.difficulty.color.withValues(alpha: 0.35), width: 1.5),
                 ),
                 child: game.buildChallengeWidget(
                   context,

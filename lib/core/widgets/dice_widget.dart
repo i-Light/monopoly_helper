@@ -61,7 +61,7 @@ class _DiceWidgetState extends State<DiceWidget> with SingleTickerProviderStateM
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.35),
+            color: Colors.black.withValues(alpha: 0.35),
             blurRadius: 10,
             offset: const Offset(2, 5),
           ),
@@ -183,7 +183,7 @@ class _DiceWidgetState extends State<DiceWidget> with SingleTickerProviderStateM
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: AppColors.primary, width: 1.2),
               ),
@@ -201,7 +201,7 @@ class _DiceWidgetState extends State<DiceWidget> with SingleTickerProviderStateM
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withOpacity(0.2),
+                  color: AppColors.secondary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AppColors.secondary, width: 1.2),
                 ),

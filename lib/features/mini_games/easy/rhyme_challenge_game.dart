@@ -41,7 +41,7 @@ class RhymeChallengeGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.easyTier.withOpacity(0.12),
+          color: AppColors.easyTier.withValues(alpha: 0.12),
           borderColor: AppColors.easyTier,
           child: Column(
             children: [
@@ -82,7 +82,7 @@ class RhymeChallengeGame extends BaseMiniGame {
                   children: item.validRhymes
                       .map((rhyme) => Chip(
                             label: Text(rhyme),
-                            backgroundColor: AppColors.easyTier.withOpacity(0.15),
+                            backgroundColor: AppColors.easyTier.withValues(alpha: 0.15),
                           ))
                       .toList(),
                 ),

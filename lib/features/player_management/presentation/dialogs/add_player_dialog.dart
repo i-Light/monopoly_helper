@@ -65,7 +65,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
               spacing: 8,
               runSpacing: 8,
               children: AppColors.playerColors.map((c) {
-                final isSelected = c.value == _selectedColor.value;
+                final isSelected = c.toARGB32() == _selectedColor.toARGB32();
                 return GestureDetector(
                   onTap: () => setState(() => _selectedColor = c),
                   child: Container(
@@ -81,7 +81,7 @@ class _AddPlayerDialogState extends State<AddPlayerDialog> {
                       boxShadow: [
                         if (isSelected)
                           BoxShadow(
-                            color: c.withOpacity(0.6),
+                            color: c.withValues(alpha: 0.6),
                             blurRadius: 8,
                             spreadRadius: 2,
                           ),

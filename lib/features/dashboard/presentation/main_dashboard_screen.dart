@@ -66,7 +66,7 @@ class MainDashboardScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.cashGold.withOpacity(0.2),
+                      color: AppColors.cashGold.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.account_balance_wallet, color: AppColors.cashGold, size: 30),
@@ -142,7 +142,7 @@ class MainDashboardScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withOpacity(0.18),
+                        color: AppColors.warning.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: AppColors.warning),
                       ),
@@ -168,7 +168,7 @@ class MainDashboardScreen extends StatelessWidget {
 
             // Random Mini Game Banner
             CustomCard(
-              color: AppColors.primaryDark.withOpacity(0.2),
+              color: AppColors.primaryDark.withValues(alpha: 0.2),
               borderColor: AppColors.primary,
               onTap: () {
                 if (playerProvider.activePlayers.isEmpty) {

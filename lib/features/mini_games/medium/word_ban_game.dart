@@ -41,7 +41,7 @@ class WordBanGame extends BaseMiniGame {
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomCard(
-          color: AppColors.mediumTier.withOpacity(0.15),
+          color: AppColors.mediumTier.withValues(alpha: 0.15),
           borderColor: AppColors.mediumTier,
           child: Column(
             children: [
@@ -67,7 +67,7 @@ class WordBanGame extends BaseMiniGame {
         ),
         const SizedBox(height: 14),
         CustomCard(
-          borderColor: AppColors.error.withOpacity(0.6),
+          borderColor: AppColors.error.withValues(alpha: 0.6),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -91,7 +91,7 @@ class WordBanGame extends BaseMiniGame {
                             w,
                             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                           ),
-                          backgroundColor: AppColors.error.withOpacity(0.25),
+                          backgroundColor: AppColors.error.withValues(alpha: 0.25),
                           side: const BorderSide(color: AppColors.error, width: 1),
                         ))
                     .toList(),
