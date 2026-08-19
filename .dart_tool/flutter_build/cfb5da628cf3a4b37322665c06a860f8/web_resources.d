@@ -1,0 +1,1 @@
+ C:\\programming\\flutter\\monopoly_helper\\build\\web\\manifest.json:  C:\\programming\\flutter\\monopoly_helper\\web\\index.html C:\\programming\\flutter\\monopoly_helper\\web\\manifest.json
