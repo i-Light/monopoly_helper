@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/word_chain_data.dart';
 
 class LastLetterWordChainGame extends BaseMiniGame {
-  WordChainItem? _currentChallenge;
-
   LastLetterWordChainGame()
       : super(
           id: 'last_letter_word_chain',
@@ -23,53 +21,60 @@ class LastLetterWordChainGame extends BaseMiniGame {
           icon: Icons.link,
         );
 
+  WordChainItem? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = WordChainData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final item = _currentChallenge ??= WordChainData.getRandom();
+
+    return CustomCard(
+      color: AppColors.mediumTier.withValues(alpha: 0.12),
+      borderColor: AppColors.mediumTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'الكلمة الابتدائية للسلسلة:',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.mediumTier,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              item.startingWord,
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'المطلوب تكوين ${item.requiredChainLength} كلمات متسلسلة بالحرف الأخير',
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final item = _currentChallenge!;
+    final item = _currentChallenge ??= WordChainData.getRandom();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.mediumTier.withValues(alpha: 0.12),
-          borderColor: AppColors.mediumTier,
-          child: Column(
-            children: [
-              const Text(
-                'الكلمة الابتدائية للسلسلة:',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.mediumTier,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  item.startingWord,
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.white),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'المطلوب تكوين ${item.requiredChainLength} كلمات متسلسلة بالحرف الأخير',
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

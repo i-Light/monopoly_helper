@@ -1,17 +1,15 @@
+/// Centralized, human-readable copy for the whole app.
+///
+/// Every user-facing piece of text lives here (rather than inline in
+/// widgets) so wording can be reviewed or swapped in one place. Strings
+/// carried over from the previous version of the app were left untouched;
+/// only new strings needed for the redesigned turn flow were added.
 class AppStrings {
   AppStrings._();
 
   // App Identity
   static const String appTitle = 'مساعد مونوبولي';
   static const String appSubtitle = 'باقة الألعاب المصغرة والتحديات التفاعلية';
-
-  // Navigation
-  static const String navDashboard = 'الرئيسية';
-  static const String navPlayers = 'اللاعبين والبنك';
-  static const String navMiniGames = 'الألعاب المصغرة';
-  static const String navCards = 'كروت الحظ';
-  static const String navHistory = 'سجل العمليات';
-  static const String navSettings = 'الإعدادات';
 
   // Difficulties
   static const String allDifficulties = 'الكل';
@@ -21,16 +19,14 @@ class AppStrings {
 
   // Game Controls & Actions
   static const String randomGame = 'اختيار لعبة عشوائية';
-  static const String randomMiniGame = 'اختيار لعبة عشوائية';
-  static const String miniGamesHub = 'باقة الألعاب المصغرة';
   static const String startTimer = 'بدء المؤقت';
   static const String pauseTimer = 'إيقاف مؤقت';
   static const String resetTimer = 'إعادة ضبط المؤقت';
   static const String newChallenge = 'تحدي جديد';
   static const String revealAnswer = '👁️ كشف الإجابة / الحل';
   static const String hideAnswer = 'إخفاء الإجابة';
-  static const String markSuccess = 'تم بنجاح';
-  static const String markFail = 'إخفاق';
+  static const String markSuccess = 'تم أو ادفع 💰';
+  static const String markFail = 'ما تتحركش';
   static const String timeUp = '⏰ انتهى الوقت!';
   static const String seconds = 'ثانية';
   static const String rules = 'قواعد التحدي';
@@ -38,35 +34,80 @@ class AppStrings {
   static const String totalPlayed = 'إجمالي التحديات';
   static const String selectGame = 'اختر لعبة من القائمة لبدء التحدي';
 
-  // Player & Bank Management Strings
-  static const String addPlayer = 'إضافة لاعب جديد';
-  static const String playerName = 'اسم اللاعب';
-  static const String startingBalance = 'الرصيد الافتتاحي';
-  static const String selectColor = 'اختر اللون';
-  static const String transferMoney = 'تحويل أموال';
-  static const String fromPlayer = 'من اللاعب';
-  static const String toPlayer = 'إلى اللاعب';
-  static const String amount = 'المبلغ (£)';
-  static const String note = 'ملاحظة';
-  static const String confirm = 'تأكيد';
-  static const String cancel = 'إلغاء';
-  static const String totalCashInGame = 'إجمالي السيولة النقدية';
-  static const String diceRoller = 'رمي النرد';
-  static const String activePlayers = 'اللاعبون الحاليون';
-  static const String quickActions = 'إجراءات بنكية سريعة';
-  static const String clearHistory = 'مسح السجل';
-  static const String noTransactions = 'لا توجد عمليات مسجلة حتى الآن.';
-  static const String gameSettings = 'إعدادات اللعبة';
-  static const String darkMode = 'الوضع الليلي';
-  static const String soundEffects = 'المؤثرات الصوتية';
-  static const String resetAll = 'إعادة ضبط اللعبة بالكامل';
+  // ---------------------------------------------------------------------
+  // Moves-selection stage (screen 1 of the main turn loop)
+  // ---------------------------------------------------------------------
+  static const String movesSelectionPrompt =
+      'اختر عدد الخطوات اللي عايز تلعبها. كل ما زودت عدد الخطوات كل ما كان '
+      'التحدي أصعب، والمبلغ اللي هتدفعه لو خسرت وقررت تتحرك برضه هيكون أكبر.';
+  static const String stepsLabel = 'خطوة';
 
-  // Cards
-  static const String chanceTitle = 'فرصة (Chance)';
-  static const String communityTitle = 'صندوق الجماعة (Community Chest)';
-  static const String drawCard = 'اسحب كارت';
+  // ---------------------------------------------------------------------
+  // Challenge (games) stage (screen 2 of the main turn loop)
+  // ---------------------------------------------------------------------
+  static const String rulesBannerPrefix = 'القواعد';
+  static const String dontMove = 'لا تتحرك';
+  static const String confirmAndContinue = 'تم، التالي';
+  static const String payToMovePrefix = 'ادفع';
+  static const String payToMoveSuffix = 'وتحرك';
+  static const String currency = '£';
 
-  // 14 Mini Games Strings
+  // Pay confirmation sheet
+  static const String payConfirmTitle = 'تأكيد الدفع';
+  static const String payConfirmBody =
+      'هل أنت متأكد أنك عايز تدفع المبلغ ده عشان تكمل حركتك رغم خسارة التحدي؟';
+  static const String payConfirmAccept = 'أيوه، ادفع وكمل';
+  static const String payConfirmCancel = 'إلغاء';
+
+  // ---------------------------------------------------------------------
+  // Results stage (screen 3 of the main turn loop)
+  // ---------------------------------------------------------------------
+  static const String resultWonHeadline = 'فزت بالتحدي! تحرك مجاناً 🎉';
+  static const String resultPaidHeadline = 'خسرت التحدي، بس دفعت وكملت الحركة 💰';
+  static const String resultStayedHeadline = 'خسرت التحدي وقررت تفضل مكانك';
+  static const String goToCityPrefix = 'روح';
+  static const String stayAtCityPrefix = 'ابق في';
+  static const String colorOnCardTooltip = 'اللون على الكارت';
+  static const String colorOnBoardTooltip = 'اللون على اللوحة';
+
+  static const String buyCity = 'شراء';
+  static const String citySold = 'تم الشراء';
+  static const String buyGarage = 'شراء الجراج';
+  static const String garageSold = 'تم شراء الجراج';
+  static const String buyMarket = 'شراء السوق';
+  static const String marketSold = 'تم شراء السوق';
+  static const String endTurn = 'أنهى الدور';
+
+  static const String buyFromOwner = 'اشترها منه';
+  static const String payOwnerAndFinish = 'ادفع له وأنهي الدور';
+
+  static const String insufficientFunds = 'الرصيد مش كافي لإتمام العملية';
+
+  // ---------------------------------------------------------------------
+  // Player status bar
+  // ---------------------------------------------------------------------
+  static const String playerPositionUnknown = 'لسه ما اتحركش';
+
+  // ---------------------------------------------------------------------
+  // Navigation drawer (opened from the pinned bottom button)
+  // ---------------------------------------------------------------------
+  static const String navigationDrawerTitle = 'التنقل';
+  static const String navigationDrawerComingSoon =
+      'الإعدادات وتعديل كروت اللاعبين هتتضاف هنا قريباً.';
+
+  // Rotating hint strings shown on the pinned bottom marquee button.
+  // Sourced from NavigationTipsData so they stay editable in one dataset.
+  static const String openNavigation = 'افتح قائمة التنقل';
+
+  // ---------------------------------------------------------------------
+  // Challenge picker (the "new challenge" filterable list)
+  // ---------------------------------------------------------------------
+  static const String challengePickerTitle = 'اختر تحدي';
+  static const String noGamesForFilter = 'لا توجد ألعاب لهذا التصنيف';
+
+  // ---------------------------------------------------------------------
+  // 14 Mini Games Strings (unchanged from the original app)
+  // ---------------------------------------------------------------------
   // Easy
   static const String gameFastStopBusTitle = 'أتوبيس كومبليت السريع';
   static const String gameFastStopBusDesc =

@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/stop_the_bus_data.dart';
 
 class HardStopBusGame extends BaseMiniGame {
-  Map<String, dynamic>? _currentChallenge;
-
   HardStopBusGame()
       : super(
           id: 'hard_stop_bus',
@@ -23,53 +21,59 @@ class HardStopBusGame extends BaseMiniGame {
           icon: Icons.directions_bus_filled,
         );
 
+  Map<String, dynamic>? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = StopTheBusData.generateRandomHard();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final letter = (_currentChallenge ??= StopTheBusData.generateRandomHard())['letter'] as String;
+
+    return CustomCard(
+      color: AppColors.hardTier.withValues(alpha: 0.12),
+      borderColor: AppColors.hardTier,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'الحرف:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 14),
+          Container(
+            width: 58,
+            height: 58,
+            decoration: const BoxDecoration(
+              color: AppColors.hardTier,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                letter,
+                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final letter = _currentChallenge!['letter'] as String;
-    final categories = _currentChallenge!['categories'] as List<String>;
+    final categories = (_currentChallenge ??= StopTheBusData.generateRandomHard())['categories'] as List<String>;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.hardTier.withValues(alpha: 0.12),
-          borderColor: AppColors.hardTier,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'الحرف:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(width: 14),
-              Container(
-                width: 58,
-                height: 58,
-                decoration: const BoxDecoration(
-                  color: AppColors.hardTier,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    letter,
-                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 10),
         ...categories.map((cat) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 3),
               child: CustomCard(

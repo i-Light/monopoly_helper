@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/tongue_twisters_data.dart';
 
 class TongueTwistersGame extends BaseMiniGame {
-  TongueTwisterItem? _currentChallenge;
-
   TongueTwistersGame()
       : super(
           id: 'tongue_twisters',
@@ -23,78 +21,78 @@ class TongueTwistersGame extends BaseMiniGame {
           icon: Icons.record_voice_over,
         );
 
+  TongueTwisterItem? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = TongueTwistersData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final item = _currentChallenge ??= TongueTwistersData.getRandom();
+
+    return CustomCard(
+      color: AppColors.hardTier.withValues(alpha: 0.12),
+      borderColor: AppColors.hardTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'كرر هذه العبارة 3 مرات متتالية:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: AppColors.darkCard,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.hardTier),
+            ),
+            child: Text(
+              item.phrase,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.cashGold,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            item.hint,
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final item = _currentChallenge!;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      spacing: 12,
+      runSpacing: 10,
+      alignment: WrapAlignment.center,
       children: [
-        CustomCard(
-          color: AppColors.hardTier.withValues(alpha: 0.12),
-          borderColor: AppColors.hardTier,
-          child: Column(
-            children: [
-              const Text(
-                'كرر هذه العبارة 3 مرات متتالية:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.darkCard,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.hardTier),
-                ),
-                child: Text(
-                  item.phrase,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.cashGold,
-                    height: 1.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                item.hint,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-            ],
-          ),
+        ElevatedButton.icon(
+          onPressed: onGameWon,
+          icon: const Icon(Icons.check),
+          label: const Text('كررها بطلاقة'),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.success),
         ),
-        const SizedBox(height: 20),
-        Wrap(
-          spacing: 12,
-          runSpacing: 10,
-          alignment: WrapAlignment.center,
-          children: [
-            ElevatedButton.icon(
-              onPressed: onGameWon,
-              icon: const Icon(Icons.check),
-              label: const Text('كررها بطلاقة'),
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.success),
-            ),
-            ElevatedButton.icon(
-              onPressed: onGameLost,
-              icon: const Icon(Icons.close),
-              label: const Text('أخطأ / تلعثم'),
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            ),
-          ],
+        ElevatedButton.icon(
+          onPressed: onGameLost,
+          icon: const Icon(Icons.close),
+          label: const Text('أخطأ / تلعثم'),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
         ),
       ],
     );

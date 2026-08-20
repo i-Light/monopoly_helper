@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/double_constraint_data.dart';
 
 class DoubleConstraintWordGame extends BaseMiniGame {
-  DoubleConstraintItem? _currentChallenge;
-
   DoubleConstraintWordGame()
       : super(
           id: 'double_constraint_word',
@@ -23,93 +21,100 @@ class DoubleConstraintWordGame extends BaseMiniGame {
           icon: Icons.filter_2,
         );
 
+  DoubleConstraintItem? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = DoubleConstraintData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final item = _currentChallenge ??= DoubleConstraintData.getRandom();
+
+    return CustomCard(
+      color: AppColors.hardTier.withValues(alpha: 0.12),
+      borderColor: AppColors.hardTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.rule, color: AppColors.hardTier, size: 20),
+              SizedBox(width: 6),
+              Text(
+                'الشرطان المطلوبان معاً:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.darkCard,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.hardTier),
+            ),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  radius: 12,
+                  backgroundColor: AppColors.hardTier,
+                  child: Text('1', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    item.constraint1,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.darkCard,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.hardTier),
+            ),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  radius: 12,
+                  backgroundColor: AppColors.hardTier,
+                  child: Text('2', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    item.constraint2,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final item = _currentChallenge!;
+    final item = _currentChallenge ??= DoubleConstraintData.getRandom();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.hardTier.withValues(alpha: 0.12),
-          borderColor: AppColors.hardTier,
-          child: Column(
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.rule, color: AppColors.hardTier, size: 20),
-                  SizedBox(width: 6),
-                  Text(
-                    'الشرطان المطلوبان معاً:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.darkCard,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.hardTier),
-                ),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 12,
-                      backgroundColor: AppColors.hardTier,
-                      child: Text('1', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        item.constraint1,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.darkCard,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.hardTier),
-                ),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 12,
-                      backgroundColor: AppColors.hardTier,
-                      child: Text('2', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        item.constraint2,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
         CustomCard(
           child: ExpansionTile(
             title: const Text('أمثلة صحيحة مقترحة (للحَكَم)', style: TextStyle(fontSize: 13, color: Colors.grey)),

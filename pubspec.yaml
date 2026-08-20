@@ -1,18 +1,20 @@
 name: monopoly_helper
-description: "A professional modular Flutter companion and mini-game suite for Monopoly with banking, dice roller, chance cards, and 14 interactive mini-games."
+description: "A professional, modular Flutter companion app for Monopoly with a player status bar, a moves/challenge/results turn loop, 14 interactive mini-games, and board-city ownership tracking."
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=3.10.0"
+  sdk: '>=3.5.0 <4.0.0'
+  # withValues(alpha:), OverlayPortal and other APIs already used across
+  # the codebase require a recent Flutter; the previous ">=3.10.0" was
+  # stale relative to what the code actually needs.
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  provider: '>=6.0.0 <7.0.0'
 
 dev_dependencies:
   flutter_test:
@@ -23,4 +25,4 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/data/
+    - assets/images/cities/

@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/speed_math_data.dart';
 
 class SpeedMathGame extends BaseMiniGame {
-  MathChallenge? _currentChallenge;
-
   SpeedMathGame()
       : super(
           id: 'speed_math',
@@ -23,46 +21,54 @@ class SpeedMathGame extends BaseMiniGame {
           icon: Icons.calculate,
         );
 
+  MathChallenge? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = SpeedMathData.generateChallenge();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    if (_currentChallenge == null) generateNewChallenge();
+    final challenge = _currentChallenge!;
+
+    return CustomCard(
+      color: AppColors.easyTier.withValues(alpha: 0.12),
+      borderColor: AppColors.easyTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'المسألة الحسابية:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            challenge.expression,
+            style: const TextStyle(
+              fontSize: 34,
+              fontWeight: FontWeight.w900,
+              color: AppColors.secondary,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final challenge = _currentChallenge!;
+    final challenge = _currentChallenge ??= SpeedMathData.generateChallenge();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.easyTier.withValues(alpha: 0.12),
-          borderColor: AppColors.easyTier,
-          child: Column(
-            children: [
-              const Text(
-                'المسألة الحسابية:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                challenge.expression,
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.secondary,
-                  letterSpacing: 1.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
         const Text(
           'اختر الإجابة الصحيحة:',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),

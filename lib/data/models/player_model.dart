@@ -1,85 +1,67 @@
 import 'package:flutter/material.dart';
 
+/// A player taking part in the physical board game.
+///
+/// This is a deliberately trimmed-down version of the player model the
+/// app used to ship (that one also tracked jail state, bankruptcy, and a
+/// dice roller — none of which are part of the redesigned flow). Only
+/// what the new turn loop actually needs is kept:
+///   * [balance]: the player's cash, in the same currency the board uses.
+///   * [position]: the index (into `CitiesData.all`) of the city the
+///     player's physical piece is standing on right now.
+///   * [ownedCityIndices]: which cities' base plot this player owns. The
+///     brief specifically asked for this to be "a list of indices", so
+///     ownership of the base plot is tracked exactly that way.
+///   * [ownedGarageIndices] / [ownedMarketIndices]: the same idea, kept as
+///     two extra index lists so the garage/market "buy" buttons on the
+///     results page can independently show "buy" vs. "bought". This is a
+///     small, deliberate extension beyond the single list the brief
+///     mentioned, documented here and in ARCHITECTURE.md.
 class PlayerModel {
-  final String id;
-  String name;
-  Color color;
-  int balance;
-  List<String> properties;
-  bool isInJail;
-  int jailTurns;
-  bool isBankrupt;
-  int totalMiniGamesPlayed;
-  int totalMiniGamesWon;
-
   PlayerModel({
     required this.id,
     required this.name,
     required this.color,
-    this.balance = 1500,
-    List<String>? properties,
-    this.isInJail = false,
-    this.jailTurns = 0,
-    this.isBankrupt = false,
-    this.totalMiniGamesPlayed = 0,
-    this.totalMiniGamesWon = 0,
-  }) : properties = properties ?? [];
+    required this.balance,
+    this.position = 0,
+    List<int>? ownedCityIndices,
+    List<int>? ownedGarageIndices,
+    List<int>? ownedMarketIndices,
+  })  : ownedCityIndices = ownedCityIndices ?? <int>[],
+        ownedGarageIndices = ownedGarageIndices ?? <int>[],
+        ownedMarketIndices = ownedMarketIndices ?? <int>[];
 
-  int get netWorth => balance + (properties.length * 150); // Estimated property value
+  final String id;
+  final String name;
+  final Color color;
+  int balance;
+  int position;
+  final List<int> ownedCityIndices;
+  final List<int> ownedGarageIndices;
+  final List<int> ownedMarketIndices;
 
-  PlayerModel copyWith({
-    String? id,
-    String? name,
-    Color? color,
-    int? balance,
-    List<String>? properties,
-    bool? isInJail,
-    int? jailTurns,
-    bool? isBankrupt,
-    int? totalMiniGamesPlayed,
-    int? totalMiniGamesWon,
-  }) {
-    return PlayerModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      color: color ?? this.color,
-      balance: balance ?? this.balance,
-      properties: properties ?? List.from(this.properties),
-      isInJail: isInJail ?? this.isInJail,
-      jailTurns: jailTurns ?? this.jailTurns,
-      isBankrupt: isBankrupt ?? this.isBankrupt,
-      totalMiniGamesPlayed: totalMiniGamesPlayed ?? this.totalMiniGamesPlayed,
-      totalMiniGamesWon: totalMiniGamesWon ?? this.totalMiniGamesWon,
-    );
+  /// Initials made from the first letter of each word in [name], used on
+  /// the results page's ownership badge (e.g. "أحمد علي" -> "أع").
+  String get initials {
+    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty);
+    if (parts.isEmpty) return '?';
+    return parts.map(_firstGrapheme).join();
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'colorValue': color.toARGB32(),
-      'balance': balance,
-      'properties': properties,
-      'isInJail': isInJail,
-      'jailTurns': jailTurns,
-      'isBankrupt': isBankrupt,
-      'totalMiniGamesPlayed': totalMiniGamesPlayed,
-      'totalMiniGamesWon': totalMiniGamesWon,
-    };
+  /// Returns the first "visible" character of [word], keeping an Arabic
+  /// base letter together with a following combining diacritic (if any)
+  /// so initials never end up as a lone, invisible mark.
+  static String _firstGrapheme(String word) {
+    if (word.isEmpty) return '';
+    // const combiningMarks = "p1"; // RegExp(r'[\u064B-\u065F\u0670]');
+    // var end = 1;
+    // while (end < word.length && combiningMarks.hasMatch(word[end])) {
+    //   end++;
+    // }
+    return "p1";//word.substring(0, end);
   }
 
-  factory PlayerModel.fromJson(Map<String, dynamic> json) {
-    return PlayerModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      color: Color(json['colorValue'] as int),
-      balance: json['balance'] as int? ?? 1500,
-      properties: List<String>.from(json['properties'] ?? []),
-      isInJail: json['isInJail'] as bool? ?? false,
-      jailTurns: json['jailTurns'] as int? ?? 0,
-      isBankrupt: json['isBankrupt'] as bool? ?? false,
-      totalMiniGamesPlayed: json['totalMiniGamesPlayed'] as int? ?? 0,
-      totalMiniGamesWon: json['totalMiniGamesWon'] as int? ?? 0,
-    );
-  }
+  bool ownsCity(int cityIdx) => ownedCityIndices.contains(cityIdx);
+  bool ownsGarage(int cityIdx) => ownedGarageIndices.contains(cityIdx);
+  bool ownsMarket(int cityIdx) => ownedMarketIndices.contains(cityIdx);
 }

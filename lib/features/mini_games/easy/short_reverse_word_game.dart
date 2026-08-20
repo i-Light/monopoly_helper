@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/reverse_words_data.dart';
 
 class ShortReverseWordGame extends BaseMiniGame {
-  ReverseWordItem? _currentChallenge;
-
   ShortReverseWordGame()
       : super(
           id: 'short_reverse_word',
@@ -23,51 +21,58 @@ class ShortReverseWordGame extends BaseMiniGame {
           icon: Icons.swap_horiz,
         );
 
+  ReverseWordItem? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = ReverseWordsData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final item = _currentChallenge ??= ReverseWordsData.getRandom();
+
+    return CustomCard(
+      color: AppColors.easyTier.withValues(alpha: 0.12),
+      borderColor: AppColors.easyTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'الكلمة الأصلية:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            item.word,
+            style: const TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.w900,
+              color: AppColors.primaryLight,
+              letterSpacing: 2.0,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'تلميح: ${item.hint}',
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final item = _currentChallenge!;
+    final item = _currentChallenge ??= ReverseWordsData.getRandom();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.easyTier.withValues(alpha: 0.12),
-          borderColor: AppColors.easyTier,
-          child: Column(
-            children: [
-              const Text(
-                'الكلمة الأصلية:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                item.word,
-                style: const TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.primaryLight,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'تلميح: ${item.hint}',
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
         CustomCard(
           child: Column(
             children: [

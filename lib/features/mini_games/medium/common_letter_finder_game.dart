@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/common_letter_data.dart';
 
 class CommonLetterFinderGame extends BaseMiniGame {
-  CommonLetterItem? _currentChallenge;
-
   CommonLetterFinderGame()
       : super(
           id: 'common_letter_finder',
@@ -23,56 +21,63 @@ class CommonLetterFinderGame extends BaseMiniGame {
           icon: Icons.spellcheck,
         );
 
+  CommonLetterItem? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = CommonLetterData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final item = _currentChallenge ??= CommonLetterData.getRandom();
+
+    return CustomCard(
+      color: AppColors.mediumTier.withValues(alpha: 0.12),
+      borderColor: AppColors.mediumTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'الكلمات المشتركة في حرف واحد:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: item.words
+                .map((w) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.darkCard,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.mediumTier.withValues(alpha: 0.5)),
+                      ),
+                      child: Text(
+                        w,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final item = _currentChallenge!;
+    final item = _currentChallenge ??= CommonLetterData.getRandom();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.mediumTier.withValues(alpha: 0.12),
-          borderColor: AppColors.mediumTier,
-          child: Column(
-            children: [
-              const Text(
-                'الكلمات المشتركة في حرف واحد:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                alignment: WrapAlignment.center,
-                children: item.words
-                    .map((w) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: AppColors.darkCard,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.mediumTier.withValues(alpha: 0.5)),
-                          ),
-                          child: Text(
-                            w,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ))
-                    .toList(),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
         const Text(
           'اختر الحرف المشترك:',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),

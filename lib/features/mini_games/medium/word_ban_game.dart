@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/word_ban_data.dart';
 
 class WordBanGame extends BaseMiniGame {
-  WordBanCard? _currentChallenge;
-
   WordBanGame()
       : super(
           id: 'word_ban',
@@ -23,49 +21,56 @@ class WordBanGame extends BaseMiniGame {
           icon: Icons.block,
         );
 
+  WordBanCard? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = WordBanData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final card = _currentChallenge ??= WordBanData.getRandom();
+
+    return CustomCard(
+      color: AppColors.mediumTier.withValues(alpha: 0.15),
+      borderColor: AppColors.mediumTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'الكلمة المطلوب شرحها (Target):',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            card.targetWord,
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
+              color: AppColors.cashGold,
+            ),
+          ),
+          Text(
+            'التصنيف: ${card.category}',
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final card = _currentChallenge!;
+    final card = _currentChallenge ??= WordBanData.getRandom();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.mediumTier.withValues(alpha: 0.15),
-          borderColor: AppColors.mediumTier,
-          child: Column(
-            children: [
-              const Text(
-                'الكلمة المطلوب شرحها (Target):',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                card.targetWord,
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.cashGold,
-                ),
-              ),
-              Text(
-                'التصنيف: ${card.category}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
         CustomCard(
           borderColor: AppColors.error.withValues(alpha: 0.6),
           child: Column(

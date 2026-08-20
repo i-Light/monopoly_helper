@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/stop_the_bus_data.dart';
 
 class FastStopBusGame extends BaseMiniGame {
-  Map<String, dynamic>? _currentChallenge;
-
   FastStopBusGame()
       : super(
           id: 'fast_stop_bus',
@@ -23,63 +21,70 @@ class FastStopBusGame extends BaseMiniGame {
           icon: Icons.directions_bus,
         );
 
+  Map<String, dynamic>? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = StopTheBusData.generateRandomEasy();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    if (_currentChallenge == null) generateNewChallenge();
+    final letter = _currentChallenge!['letter'] as String;
+
+    return CustomCard(
+      color: AppColors.easyTier.withValues(alpha: 0.12),
+      borderColor: AppColors.easyTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'الحرف المطلوب:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 75,
+            height: 75,
+            decoration: BoxDecoration(
+              color: AppColors.easyTier,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.easyTier.withValues(alpha: 0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                letter,
+                style: const TextStyle(
+                  fontSize: 38,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final letter = _currentChallenge!['letter'] as String;
-    final categories = _currentChallenge!['categories'] as List<String>;
+    final categories = (_currentChallenge ??= StopTheBusData.generateRandomEasy())['categories'] as List<String>;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.easyTier.withValues(alpha: 0.12),
-          borderColor: AppColors.easyTier,
-          child: Column(
-            children: [
-              const Text(
-                'الحرف المطلوب:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: 75,
-                height: 75,
-                decoration: BoxDecoration(
-                  color: AppColors.easyTier,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.easyTier.withValues(alpha: 0.4),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    letter,
-                    style: const TextStyle(
-                      fontSize: 38,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
         const Text(
           'اذكر كلمة تبدأ بهذا الحرف لكل فئة:',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),

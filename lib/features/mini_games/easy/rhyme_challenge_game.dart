@@ -8,8 +8,6 @@ import 'package:monopoly_helper/core/widgets/custom_card.dart';
 import 'package:monopoly_helper/data/datasets/rhyme_data.dart';
 
 class RhymeChallengeGame extends BaseMiniGame {
-  RhymeItem? _currentChallenge;
-
   RhymeChallengeGame()
       : super(
           id: 'rhyme_challenge',
@@ -23,50 +21,57 @@ class RhymeChallengeGame extends BaseMiniGame {
           icon: Icons.music_note,
         );
 
+  RhymeItem? _currentChallenge;
+
   @override
   void generateNewChallenge() {
     _currentChallenge = RhymeData.getRandom();
   }
 
   @override
-  Widget buildChallengeWidget(
+  Widget buildQueryWidget(BuildContext context) {
+    final item = _currentChallenge ??= RhymeData.getRandom();
+
+    return CustomCard(
+      color: AppColors.easyTier.withValues(alpha: 0.12),
+      borderColor: AppColors.easyTier,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'الكلمة المطلوب إيجاد قوافي لها:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '« ${item.baseWord} »',
+            style: const TextStyle(
+              fontSize: 34,
+              fontWeight: FontWeight.w900,
+              color: AppColors.secondary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'المطلوب: اذكر ${item.requiredCount} كلمات قافية',
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildInteractionWidget(
     BuildContext context, {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
-    if (_currentChallenge == null) generateNewChallenge();
-    final item = _currentChallenge!;
+    final item = _currentChallenge ??= RhymeData.getRandom();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomCard(
-          color: AppColors.easyTier.withValues(alpha: 0.12),
-          borderColor: AppColors.easyTier,
-          child: Column(
-            children: [
-              const Text(
-                'الكلمة المطلوب إيجاد قوافي لها:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '« ${item.baseWord} »',
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.secondary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'المطلوب: اذكر ${item.requiredCount} كلمات قافية',
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
         CustomCard(
           child: ExpansionTile(
             title: const Text(
