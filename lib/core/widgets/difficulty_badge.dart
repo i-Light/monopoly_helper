@@ -21,7 +21,7 @@ class DifficultyBadge extends StatelessWidget {
           Icon(difficulty.icon, size: 13, color: difficulty.color),
           const SizedBox(width: 4),
           Text(
-            difficulty.labelArabic,
+            difficulty.stepsRangeLabel,
             style: TextStyle(
               color: difficulty.color,
               fontSize: 12,

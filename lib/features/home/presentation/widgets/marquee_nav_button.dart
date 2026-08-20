@@ -69,17 +69,6 @@ class _MarqueeNavButtonState extends State<MarqueeNavButton>
     const iconSlot = 52.0;
     final fontSize = 16 * scale;
 
-    // Duration scales with how long the text is, so short and long lines
-    // glide at roughly the same visual speed.
-    const speed=500;
-    final durationMs = (_currentText.length * speed).clamp(speed*15, speed*100).toInt();
-    if (_controller.duration?.inMilliseconds != durationMs) {
-      _controller.duration = Duration(milliseconds: durationMs);
-    }
-    if (!_controller.isAnimating) {
-      _controller.forward();
-    }
-
     return SafeArea(
       top: false,
       child: Padding(
@@ -124,8 +113,28 @@ class _MarqueeNavButtonState extends State<MarqueeNavButton>
                               textDirection: TextDirection.rtl,
                             )..layout();
                             final textWidth = textPainter.width;
-                            final startX = constraints.maxWidth;
-                            final endX = -textWidth;
+                            // Moves left-to-right: starts fully off-screen
+                            // to the left, ends fully off-screen to the
+                            // right. Logical pixels are already
+                            // device-pixel-ratio independent, so driving
+                            // the duration from a constant px/second speed
+                            // (instead of the old "chars * ms" guess) keeps
+                            // the glide at the same real-world speed no
+                            // matter the text length or screen density.
+                            final startX = -textWidth;
+                            final endX = constraints.maxWidth;
+                            const pixelsPerSecond = 90.0;
+                            final durationMs = (((endX - startX) / pixelsPerSecond) * 1000)
+                                .clamp(2000, 20000)
+                                .toInt();
+                            if (_controller.duration?.inMilliseconds != durationMs) {
+                              _controller.duration = Duration(milliseconds: durationMs);
+                            }
+                            if (!_controller.isAnimating) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (mounted && !_controller.isAnimating) _controller.forward();
+                              });
+                            }
 
                             return AnimatedBuilder(
                               animation: _controller,

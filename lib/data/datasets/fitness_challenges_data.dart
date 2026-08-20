@@ -7,12 +7,19 @@ class FitnessChallengeItem {
   final String instruction;
   final String iconName;
 
+  /// Number of reps to tap through with the counter button, for the
+  /// challenges that count reps. Null for time-held ones (plank, wall
+  /// sit, balance) where a rep counter doesn't make sense — those still
+  /// use the plain success/fail buttons.
+  final int? repCountTarget;
+
   const FitnessChallengeItem({
     required this.title,
     required this.target,
     required this.durationSeconds,
     required this.instruction,
     required this.iconName,
+    this.repCountTarget,
   });
 }
 
@@ -26,6 +33,7 @@ class FitnessChallengesData {
       durationSeconds: 30,
       instruction: 'قم بأداء 10 تكرارات ضغط صحيحة قبل انتهاء العداد!',
       iconName: 'fitness_center',
+      repCountTarget: 10,
     ),
     FitnessChallengeItem(
       title: 'تحدي القفز مع فتح الذراعين (Jumping Jacks)',
@@ -33,6 +41,7 @@ class FitnessChallengesData {
       durationSeconds: 25,
       instruction: 'أنجز 20 قفزة جاكس بنشاط وسرعة!',
       iconName: 'directions_run',
+      repCountTarget: 20,
     ),
     FitnessChallengeItem(
       title: 'تحدي تمرين البلانك (Plank)',
@@ -47,6 +56,7 @@ class FitnessChallengesData {
       durationSeconds: 35,
       instruction: 'انزل لزاوية 90 درجة مع الحفاظ على استقامة الصدر!',
       iconName: 'sports_gymnastics',
+      repCountTarget: 15,
     ),
     FitnessChallengeItem(
       title: 'تحدي التوازن على قدم واحدة',

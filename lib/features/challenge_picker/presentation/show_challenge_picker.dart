@@ -18,13 +18,14 @@ Future<BaseMiniGame?> showChallengePicker(
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (sheetContext) {
-      final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.82;
+      final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.95;
       return Align(
         alignment: Alignment.bottomCenter,
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: isDesktop ? 460 : double.infinity,
             maxHeight: maxHeight,
+            minHeight: maxHeight,
           ),
           child: Container(
             margin: isDesktop ? const EdgeInsets.only(bottom: 24) : EdgeInsets.zero,
@@ -35,9 +36,22 @@ Future<BaseMiniGame?> showChallengePicker(
             ),
             child: SafeArea(
               top: false,
-              child: ChallengePickerPanel(
-                initialDifficulty: initialDifficulty,
-                onGameSelected: (game) => Navigator.of(sheetContext).pop(game),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(sheetContext).pop(),
+                    ),
+                  ),
+                  Expanded(
+                    child: ChallengePickerPanel(
+                      initialDifficulty: initialDifficulty,
+                      onGameSelected: (game) => Navigator.of(sheetContext).pop(game),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -18,10 +18,47 @@ import 'package:monopoly_helper/features/game_session/state/game_session_control
 /// number of buy buttons shown here varies (two vs. four), so a fixed
 /// flex split isn't safe on short screens — scaling the whole block down
 /// to fit is.
-class ResultsPage extends StatelessWidget {
+class ResultsPage extends StatefulWidget {
   const ResultsPage({super.key, required this.controller});
 
   final GameSessionController controller;
+
+  @override
+  State<ResultsPage> createState() => _ResultsPageState();
+}
+
+class _ResultsPageState extends State<ResultsPage> {
+  GameSessionController get controller => widget.controller;
+  bool _confettiFiredForThisVisit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeFireConfetti());
+  }
+
+  @override
+  void didUpdateWidget(covariant ResultsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller.moveResolution == MoveResolution.none) {
+      _confettiFiredForThisVisit = false;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeFireConfetti());
+  }
+
+  void _maybeFireConfetti() {
+    if (!mounted || _confettiFiredForThisVisit) return;
+    final resolved = controller.moveResolution == MoveResolution.wonFree ||
+        controller.moveResolution == MoveResolution.paidToMove;
+    if (!resolved) return;
+    _confettiFiredForThisVisit = true;
+    ConfettiOverlay.fire(
+      context,
+      palette: controller.moveResolution == MoveResolution.paidToMove
+          ? ConfettiPalette.golden
+          : ConfettiPalette.colorful,
+    );
+  }
 
   String get _headline {
     switch (controller.moveResolution) {
@@ -84,7 +121,8 @@ class ResultsPage extends StatelessWidget {
                       price: city.basePrice,
                       fee: city.baseFee,
                       isOwned: false,
-                      canAfford: controller.activePlayer.balance >= city.basePrice,
+                      canAfford: !controller.hasActedThisVisit &&
+                          controller.activePlayer.balance >= city.basePrice,
                       onTap: controller.buyFromOwner,
                     ),
                     const SizedBox(height: 8),
@@ -95,7 +133,8 @@ class ResultsPage extends StatelessWidget {
                       price: city.baseFee,
                       fee: 0,
                       isOwned: false,
-                      canAfford: controller.activePlayer.balance >= city.baseFee,
+                      canAfford: !controller.hasActedThisVisit &&
+                          controller.activePlayer.balance >= city.baseFee,
                       onTap: controller.payOwnerAndFinishTurn,
                     ),
                   ] else ...[
@@ -106,10 +145,12 @@ class ResultsPage extends StatelessWidget {
                       price: city.basePrice,
                       fee: city.baseFee,
                       isOwned: controller.activePlayer.ownsCity(controller.relevantCityIndex),
-                      canAfford: controller.canAffordBase,
+                      canAfford: !controller.hasActedThisVisit && controller.canAffordBase,
                       onTap: controller.buyBase,
                     ),
                     const SizedBox(height: 8),
+                    // Garage stays visible even before the base plot is
+                    // owned, but isn't tappable until then.
                     CityActionButton(
                       icon: Icons.garage,
                       buyLabel: AppStrings.buyGarage,
@@ -117,20 +158,23 @@ class ResultsPage extends StatelessWidget {
                       price: city.garagePrice,
                       fee: city.garageFee,
                       isOwned: controller.activePlayer.ownsGarage(controller.relevantCityIndex),
-                      canAfford: controller.canAffordGarage,
+                      canAfford: controller.canBuyGarage,
                       onTap: controller.buyGarage,
                     ),
-                    const SizedBox(height: 8),
-                    CityActionButton(
-                      icon: Icons.storefront,
-                      buyLabel: AppStrings.buyMarket,
-                      boughtLabel: AppStrings.marketSold,
-                      price: city.marketPrice,
-                      fee: city.marketFee,
-                      isOwned: controller.activePlayer.ownsMarket(controller.relevantCityIndex),
-                      canAfford: controller.canAffordMarket,
-                      onTap: controller.buyMarket,
-                    ),
+                    // Market only appears at all once the garage is owned.
+                    if (controller.marketPurchaseUnlocked) ...[
+                      const SizedBox(height: 8),
+                      CityActionButton(
+                        icon: Icons.storefront,
+                        buyLabel: AppStrings.buyMarket,
+                        boughtLabel: AppStrings.marketSold,
+                        price: city.marketPrice,
+                        fee: city.marketFee,
+                        isOwned: controller.activePlayer.ownsMarket(controller.relevantCityIndex),
+                        canAfford: controller.canBuyMarket,
+                        onTap: controller.buyMarket,
+                      ),
+                    ],
                     const SizedBox(height: 10),
                     ElevatedButton.icon(
                       onPressed: controller.finishTurn,
@@ -147,16 +191,72 @@ class ResultsPage extends StatelessWidget {
             ),
           ),
         ),
-        Positioned.fill(
-          child: ConfettiOverlay(
-            play: controller.moveResolution == MoveResolution.wonFree ||
-                controller.moveResolution == MoveResolution.paidToMove,
-            palette: controller.moveResolution == MoveResolution.paidToMove
-                ? ConfettiPalette.golden
-                : ConfettiPalette.colorful,
+        if (controller.moveResolution == MoveResolution.wonFree)
+          Positioned(
+            top: 24,
+            left: 0,
+            right: 0,
+            child: Center(child: _WinToast(key: ValueKey(controller.activePlayerIndex))),
           ),
-        ),
       ],
+    );
+  }
+}
+
+/// A pill that flies in, holds briefly, then fades away on its own —
+/// used instead of a static banner so "won for free" reads as a
+/// celebratory pop-up rather than permanent page furniture.
+class _WinToast extends StatefulWidget {
+  const _WinToast({super.key});
+
+  @override
+  State<_WinToast> createState() => _WinToastState();
+}
+
+class _WinToastState extends State<_WinToast> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2200),
+  )..forward();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final t = _controller.value;
+        // In for the first 15%, held, then fades out over the last 25%.
+        final opacity = t < 0.15
+            ? (t / 0.15)
+            : t > 0.75
+                ? (1 - (t - 0.75) / 0.25).clamp(0.0, 1.0)
+                : 1.0;
+        final scale = 0.85 + 0.15 * (t < 0.15 ? (t / 0.15) : 1.0);
+        return Opacity(
+          opacity: opacity,
+          child: Transform.scale(scale: scale, child: child),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.success,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: const [
+            BoxShadow(color: Colors.black45, blurRadius: 12, offset: Offset(0, 4)),
+          ],
+        ),
+        child: const Text(
+          AppStrings.resultWonHeadline,
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
     );
   }
 }

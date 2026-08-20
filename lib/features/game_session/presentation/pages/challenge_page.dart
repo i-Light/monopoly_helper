@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monopoly_helper/core/constants/app_colors.dart';
+import 'package:monopoly_helper/core/constants/app_strings.dart';
 import 'package:monopoly_helper/core/utils/responsive.dart';
 import 'package:monopoly_helper/core/widgets/difficulty_badge.dart';
 import 'package:monopoly_helper/core/widgets/game_timer_widget.dart';
@@ -7,7 +8,6 @@ import 'package:monopoly_helper/core/widgets/scale_to_fit.dart';
 import 'package:monopoly_helper/features/challenge_picker/presentation/show_challenge_picker.dart';
 import 'package:monopoly_helper/features/game_session/presentation/dialogs/pay_confirmation_dialog.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/bottom_action_toolbar.dart';
-import 'package:monopoly_helper/features/game_session/presentation/widgets/rules_banner.dart';
 import 'package:monopoly_helper/features/game_session/state/game_session_controller.dart';
 
 /// Stage 2 of the main frame: the mini-game challenge itself ("Games
@@ -41,6 +41,22 @@ class ChallengePage extends StatelessWidget {
     if (confirmed) controller.confirmPaidMove();
   }
 
+  void _showRules(BuildContext context, String rules) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(AppStrings.rules),
+        content: Text(rules, style: const TextStyle(height: 1.4)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('تمام'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final scale = context.uiScale;
@@ -54,31 +70,41 @@ class ChallengePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8 * scale),
-                decoration: BoxDecoration(
-                  color: game.difficulty.color.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => _showRules(context, game.rules),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 4 * scale),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8 * scale),
+                      decoration: BoxDecoration(
+                        color: game.difficulty.color.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(game.icon, color: game.difficulty.color, size: 22 * scale),
+                    ),
+                    SizedBox(width: 10 * scale),
+                    Expanded(
+                      child: Text(
+                        game.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 16 * scale, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(width: 6 * scale),
+                    Icon(Icons.info_outline, size: 16 * scale, color: Colors.grey),
+                    SizedBox(width: 8 * scale),
+                    DifficultyBadge(difficulty: game.difficulty),
+                  ],
                 ),
-                child: Icon(game.icon, color: game.difficulty.color, size: 22 * scale),
               ),
-              SizedBox(width: 10 * scale),
-              Expanded(
-                child: Text(
-                  game.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 16 * scale, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(width: 8 * scale),
-              DifficultyBadge(difficulty: game.difficulty),
-            ],
+            ),
           ),
-          SizedBox(height: 10 * scale),
-          RulesBanner(rules: game.rules),
           SizedBox(height: 10 * scale),
           Expanded(
             child: ScaleToFit(
@@ -87,22 +113,19 @@ class ChallengePage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  isDesktop
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _TimerBlock(controller: controller),
-                            const SizedBox(width: 20),
-                            Expanded(child: game.buildQueryWidget(context)),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            _TimerBlock(controller: controller),
-                            const SizedBox(height: 14),
-                            game.buildQueryWidget(context),
-                          ],
-                        ),
+                  // Timer is always pinned to the physical left, in the
+                  // same row as the question, regardless of RTL layout or
+                  // screen size — Directionality.ltr keeps its position
+                  // fixed instead of flipping with the app's RTL text.
+                  Row(
+                    textDirection: TextDirection.ltr,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _TimerBlock(controller: controller),
+                      const SizedBox(width: 20),
+                      Expanded(child: game.buildQueryWidget(context)),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   game.buildInteractionWidget(
                     context,

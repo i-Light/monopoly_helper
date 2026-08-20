@@ -75,6 +75,11 @@ class FitnessChallengesGame extends BaseMiniGame {
     required VoidCallback onGameWon,
     required VoidCallback onGameLost,
   }) {
+    final target = _currentChallenge?.repCountTarget;
+    if (target != null) {
+      return _RepCounter(target: target, onGameWon: onGameWon, onGameLost: onGameLost);
+    }
+
     return Wrap(
       spacing: 12,
       runSpacing: 10,
@@ -91,6 +96,58 @@ class FitnessChallengesGame extends BaseMiniGame {
           icon: const Icon(Icons.close),
           label: const Text('توقف / إخفاق'),
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+        ),
+      ],
+    );
+  }
+}
+
+/// A tap-to-count button for rep-based fitness challenges: each tap
+/// counts one rep the player just did; hitting the target auto-wins.
+class _RepCounter extends StatefulWidget {
+  const _RepCounter({required this.target, required this.onGameWon, required this.onGameLost});
+
+  final int target;
+  final VoidCallback onGameWon;
+  final VoidCallback onGameLost;
+
+  @override
+  State<_RepCounter> createState() => _RepCounterState();
+}
+
+class _RepCounterState extends State<_RepCounter> {
+  int _count = 0;
+
+  void _increment() {
+    if (_count >= widget.target) return;
+    setState(() => _count++);
+    if (_count >= widget.target) widget.onGameWon();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '$_count / ${widget.target}',
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.hardTier),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton.icon(
+          onPressed: _increment,
+          icon: const Icon(Icons.add),
+          label: const Text('عدت وحدة'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.hardTier,
+            minimumSize: const Size(200, 56),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextButton.icon(
+          onPressed: widget.onGameLost,
+          icon: const Icon(Icons.close, color: AppColors.error),
+          label: const Text('توقف / إخفاق', style: TextStyle(color: AppColors.error)),
         ),
       ],
     );

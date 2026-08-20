@@ -18,6 +18,20 @@ enum MiniGameDifficulty {
     }
   }
 
+  /// Steps range this tier covers on the 3x3 moves grid — shown instead of
+  /// the "easy/medium/hard" word so the player sees why a challenge is
+  /// tougher (they picked more steps), not just a subjective label.
+  String get stepsRangeLabel {
+    switch (this) {
+      case MiniGameDifficulty.easy:
+        return '1-3';
+      case MiniGameDifficulty.medium:
+        return '4-6';
+      case MiniGameDifficulty.hard:
+        return '7-9';
+    }
+  }
+
   String get labelEnglish {
     switch (this) {
       case MiniGameDifficulty.easy:

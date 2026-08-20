@@ -71,6 +71,10 @@ class BottomActionToolbar extends StatelessWidget {
           icon: Icon(Icons.refresh, size: 18 * scale),
           label: Text(AppStrings.newChallenge, style: TextStyle(fontSize: 13 * scale)),
           style: OutlinedButton.styleFrom(
+            // Fixed minimum size so this button doesn't visibly grow or
+            // shrink as the Wrap reflows around the (variable-length)
+            // won/lost button next to it.
+            minimumSize: Size(140 * scale, 44 * scale),
             padding: EdgeInsets.symmetric(horizontal: 16 * scale, vertical: 10 * scale),
           ),
         ),

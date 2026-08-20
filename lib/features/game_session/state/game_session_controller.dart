@@ -68,6 +68,11 @@ class GameSessionController extends ChangeNotifier {
   MoveResolution moveResolution = MoveResolution.none;
   int? _destinationCityIndex;
 
+  /// Whether the active player has already bought or sold something while
+  /// standing on the current city. Only one buy/sell action is allowed per
+  /// visit — anything else has to wait for that player's next turn.
+  bool hasActedThisVisit = false;
+
   PlayerModel get activePlayer => players[activePlayerIndex];
 
   int get totalSeconds => currentGame?.timeLimitSeconds ?? 0;
@@ -226,30 +231,43 @@ class GameSessionController extends ChangeNotifier {
   bool get canAffordGarage => activePlayer.balance >= relevantCity.garagePrice;
   bool get canAffordMarket => activePlayer.balance >= relevantCity.marketPrice;
 
+  /// The garage can only be bought once the base plot is owned.
+  bool get canBuyGarage =>
+      !hasActedThisVisit && activePlayer.ownsCity(relevantCityIndex) && canAffordGarage;
+
+  /// The market button only shows up at all once the garage is owned.
+  bool get marketPurchaseUnlocked => activePlayer.ownsGarage(relevantCityIndex);
+  bool get canBuyMarket =>
+      !hasActedThisVisit && marketPurchaseUnlocked && canAffordMarket;
+
   void buyBase() {
-    if (activePlayer.ownsCity(relevantCityIndex) || !canAffordBase) return;
+    if (hasActedThisVisit || activePlayer.ownsCity(relevantCityIndex) || !canAffordBase) return;
     activePlayer.balance -= relevantCity.basePrice;
     activePlayer.ownedCityIndices.add(relevantCityIndex);
+    hasActedThisVisit = true;
     notifyListeners();
   }
 
   void buyGarage() {
-    if (activePlayer.ownsGarage(relevantCityIndex) || !canAffordGarage) return;
+    if (activePlayer.ownsGarage(relevantCityIndex) || !canBuyGarage) return;
     activePlayer.balance -= relevantCity.garagePrice;
     activePlayer.ownedGarageIndices.add(relevantCityIndex);
+    hasActedThisVisit = true;
     notifyListeners();
   }
 
   void buyMarket() {
-    if (activePlayer.ownsMarket(relevantCityIndex) || !canAffordMarket) return;
+    if (activePlayer.ownsMarket(relevantCityIndex) || !canBuyMarket) return;
     activePlayer.balance -= relevantCity.marketPrice;
     activePlayer.ownedMarketIndices.add(relevantCityIndex);
+    hasActedThisVisit = true;
     notifyListeners();
   }
 
   /// Case: the relevant city belongs to another player — buy them out of
   /// the base plot outright, then end the turn.
   void buyFromOwner() {
+    if (hasActedThisVisit) return;
     final owner = ownerOfRelevantCity;
     if (owner == null) return;
     final price = relevantCity.basePrice;
@@ -257,17 +275,20 @@ class GameSessionController extends ChangeNotifier {
     owner.balance += price;
     owner.ownedCityIndices.remove(relevantCityIndex);
     activePlayer.ownedCityIndices.add(relevantCityIndex);
+    hasActedThisVisit = true;
     endTurn();
   }
 
   /// Case: the relevant city belongs to another player — pay them rent
   /// instead of buying, then end the turn.
   void payOwnerAndFinishTurn() {
+    if (hasActedThisVisit) return;
     final owner = ownerOfRelevantCity;
     if (owner == null) return;
     final fee = relevantCity.baseFee;
     activePlayer.balance -= fee;
     owner.balance += fee;
+    hasActedThisVisit = true;
     endTurn();
   }
 
@@ -293,6 +314,7 @@ class GameSessionController extends ChangeNotifier {
     moveResolution = MoveResolution.none;
     _destinationCityIndex = null;
     rulesExpanded = false;
+    hasActedThisVisit = false;
     notifyListeners();
   }
 

@@ -202,9 +202,17 @@ class _FilterChipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final scale = context.uiScale;
     return FilterChip(
-      label: Text(label, style: TextStyle(fontSize: 12 * scale)),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12 * scale,
+          color: selected ? Colors.white : null,
+          fontWeight: selected ? FontWeight.bold : null,
+        ),
+      ),
       selected: selected,
-      selectedColor: color.withValues(alpha: 0.25),
+      selectedColor: color,
+      backgroundColor: color.withValues(alpha: 0.12),
       showCheckmark: false,
       onSelected: (_) => onTap(),
     );

@@ -43,26 +43,13 @@ class GameTimerWidget extends StatelessWidget {
               strokeCap: StrokeCap.round,
             ),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$remainingSeconds',
-                style: TextStyle(
-                  fontSize: size * 0.32,
-                  fontWeight: FontWeight.w900,
-                  color: color,
-                ),
-              ),
-              Text(
-                'ثانية',
-                style: TextStyle(
-                  fontSize: size * 0.13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
+          Text(
+            '$remainingSeconds',
+            style: TextStyle(
+              fontSize: size * 0.4,
+              fontWeight: FontWeight.w900,
+              color: color,
+            ),
           ),
         ],
       ),

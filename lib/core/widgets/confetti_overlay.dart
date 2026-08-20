@@ -26,6 +26,31 @@ class ConfettiOverlay extends StatefulWidget {
     this.particleCount = 140,
   });
 
+  /// Fires a one-off confetti burst on top of everything currently on
+  /// screen, regardless of which page called it. Unlike embedding a
+  /// [ConfettiOverlay] directly in a page's [Stack], this doesn't tie the
+  /// celebration to any one screen — any screen can call this and the
+  /// burst removes itself once it finishes playing.
+  static void fire(
+    BuildContext context, {
+    ConfettiPalette palette = ConfettiPalette.colorful,
+    int particleCount = 140,
+  }) {
+    final overlayState = Overlay.of(context);
+    late final OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (context) => Positioned.fill(
+        child: ConfettiOverlay(
+          play: true,
+          palette: palette,
+          particleCount: particleCount,
+        ),
+      ),
+    );
+    overlayState.insert(entry);
+    Future.delayed(const Duration(milliseconds: 2700), entry.remove);
+  }
+
   /// Starts (or restarts, via a new key from the parent) the burst when
   /// true. When false, nothing is painted.
   final bool play;
