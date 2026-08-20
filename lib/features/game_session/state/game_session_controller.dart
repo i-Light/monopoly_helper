@@ -41,7 +41,7 @@ class GameSessionController extends ChangeNotifier {
       Color(0xFF43A047),
       Color(0xFFFB8C00),
     ];
-    const names = ['لاعب 1', 'لاعب 2', 'لاعب 3'];
+    const names = ['مصطفى', 'أحمد', 'جنى']; //['لاعب 1', 'لاعب 2', 'لاعب 3'];
     return List.generate(
       names.length,
       (i) => PlayerModel(
@@ -91,8 +91,10 @@ class GameSessionController extends ChangeNotifier {
 
   void selectSteps(int steps) {
     selectedSteps = steps;
-    _destinationCityIndex = (activePlayer.position + steps) % CitiesData.all.length;
-    _startChallenge(_gameManager.getRandomGame(difficulty: difficultyForSteps(steps)));
+    _destinationCityIndex =
+        (activePlayer.position + steps) % CitiesData.all.length;
+    _startChallenge(
+        _gameManager.getRandomGame(difficulty: difficultyForSteps(steps)));
     stage = TurnStage.challenge;
     notifyListeners();
   }
@@ -205,15 +207,16 @@ class GameSessionController extends ChangeNotifier {
 
   /// The city the results page's buy/pay UI operates on: the destination
   /// if the player moved this turn, otherwise wherever they already stand.
-  int get relevantCityIndex =>
-      moveResolution == MoveResolution.wonFree || moveResolution == MoveResolution.paidToMove
-          ? _destinationCityIndex ?? activePlayer.position
-          : activePlayer.position;
+  int get relevantCityIndex => moveResolution == MoveResolution.wonFree ||
+          moveResolution == MoveResolution.paidToMove
+      ? _destinationCityIndex ?? activePlayer.position
+      : activePlayer.position;
 
   CityModel get relevantCity => CitiesData.byIndex(relevantCityIndex);
 
   bool get playerMovedThisTurn =>
-      moveResolution == MoveResolution.wonFree || moveResolution == MoveResolution.paidToMove;
+      moveResolution == MoveResolution.wonFree ||
+      moveResolution == MoveResolution.paidToMove;
 
   PlayerModel? get ownerOfRelevantCity {
     for (final player in players) {
@@ -233,7 +236,9 @@ class GameSessionController extends ChangeNotifier {
 
   /// The garage can only be bought once the base plot is owned.
   bool get canBuyGarage =>
-      !hasActedThisVisit && activePlayer.ownsCity(relevantCityIndex) && canAffordGarage;
+      !hasActedThisVisit &&
+      activePlayer.ownsCity(relevantCityIndex) &&
+      canAffordGarage;
 
   /// The market button only shows up at all once the garage is owned.
   bool get marketPurchaseUnlocked => activePlayer.ownsGarage(relevantCityIndex);
@@ -241,7 +246,9 @@ class GameSessionController extends ChangeNotifier {
       !hasActedThisVisit && marketPurchaseUnlocked && canAffordMarket;
 
   void buyBase() {
-    if (hasActedThisVisit || activePlayer.ownsCity(relevantCityIndex) || !canAffordBase) return;
+    if (hasActedThisVisit ||
+        activePlayer.ownsCity(relevantCityIndex) ||
+        !canAffordBase) return;
     activePlayer.balance -= relevantCity.basePrice;
     activePlayer.ownedCityIndices.add(relevantCityIndex);
     hasActedThisVisit = true;

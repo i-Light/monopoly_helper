@@ -42,47 +42,53 @@ class CityActionButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: disabled ? null : onTap,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 14 * scale, vertical: 12 * scale),
+          padding: EdgeInsets.symmetric(
+              horizontal: 14 * scale, vertical: 12 * scale),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isOwned ? AppColors.success : AppColors.primary.withValues(alpha: 0.4),
+              color: isOwned
+                  ? AppColors.success
+                  : AppColors.primary.withValues(alpha: 0.4),
             ),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(
-                isOwned ? Icons.check_circle : icon,
-                color: isOwned ? AppColors.success : AppColors.primary,
-                size: 20 * scale,
-              ),
-              SizedBox(width: 10 * scale),
-              Expanded(
-                child: Text(
+              Row(children: [
+                Icon(
+                  isOwned ? Icons.check_circle : icon,
+                  color: isOwned ? AppColors.success : AppColors.primary,
+                  size: 20 * scale,
+                ),
+                SizedBox(width: 10 * scale),
+                Text(
                   isOwned ? boughtLabel : buyLabel,
                   style: TextStyle(
-                    fontSize: 14 * scale,
+                    fontSize: 20 * scale,
                     fontWeight: FontWeight.bold,
                     color: disabled && !isOwned ? Colors.grey : null,
                   ),
                 ),
-              ),
+              ]),
               if (!isOwned)
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
+                  // mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       '$price${AppStrings.currency}',
                       style: TextStyle(
-                        fontSize: 13 * scale,
+                        fontSize: 18 * scale,
                         fontWeight: FontWeight.bold,
                         color: canAfford ? AppColors.cashGold : Colors.grey,
                       ),
                     ),
                     Text(
-                      'إيجار $fee${AppStrings.currency}',
-                      style: TextStyle(fontSize: 10 * scale, color: Colors.grey),
+                      'مرور $fee${AppStrings.currency}',
+                      style:
+                          TextStyle(fontSize: 20 * scale, color: Colors.grey),
                     ),
                   ],
                 ),

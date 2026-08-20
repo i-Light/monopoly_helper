@@ -53,12 +53,12 @@ class PlayerModel {
   /// so initials never end up as a lone, invisible mark.
   static String _firstGrapheme(String word) {
     if (word.isEmpty) return '';
-    // const combiningMarks = "p1"; // RegExp(r'[\u064B-\u065F\u0670]');
-    // var end = 1;
-    // while (end < word.length && combiningMarks.hasMatch(word[end])) {
-    //   end++;
-    // }
-    return "p1";//word.substring(0, end);
+    final combiningMarks = RegExp(r'[\u064B-\u065F\u0670]');
+    var end = 1;
+    while (end < word.length && combiningMarks.hasMatch(word[end])) {
+      end++;
+    }
+    return word.substring(0, end);
   }
 
   bool ownsCity(int cityIdx) => ownedCityIndices.contains(cityIdx);

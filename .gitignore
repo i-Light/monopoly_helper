@@ -26,3 +26,5 @@ ios/Runner/GeneratedPluginRegistrant.h
 ios/Runner/GeneratedPluginRegistrant.m
 *.lock
 *.log
+# Widget Preview related
+.widget_preview/

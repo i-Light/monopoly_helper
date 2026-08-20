@@ -4,6 +4,7 @@ import 'package:monopoly_helper/core/constants/app_strings.dart';
 import 'package:monopoly_helper/core/utils/responsive.dart';
 import 'package:monopoly_helper/core/widgets/confetti_overlay.dart';
 import 'package:monopoly_helper/core/widgets/scale_to_fit.dart';
+import 'package:monopoly_helper/data/models/player_model.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/city_action_button.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/city_image_frame.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/owner_badge.dart';
@@ -91,11 +92,6 @@ class _ResultsPageState extends State<ResultsPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    _headline,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -104,10 +100,11 @@ class _ResultsPageState extends State<ResultsPage> {
                           controller.playerMovedThisTurn
                               ? '${AppStrings.goToCityPrefix} ${city.name}'
                               : '${AppStrings.stayAtCityPrefix} ${city.name}',
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w900),
                         ),
                       ),
-                      if (owner != null) OwnerBadge(owner: owner),
+                      OwnerBadge(owner: owner),
                     ],
                   ),
                   const SizedBox(height: 14),
@@ -144,8 +141,10 @@ class _ResultsPageState extends State<ResultsPage> {
                       boughtLabel: AppStrings.citySold,
                       price: city.basePrice,
                       fee: city.baseFee,
-                      isOwned: controller.activePlayer.ownsCity(controller.relevantCityIndex),
-                      canAfford: !controller.hasActedThisVisit && controller.canAffordBase,
+                      isOwned: controller.activePlayer
+                          .ownsCity(controller.relevantCityIndex),
+                      canAfford: !controller.hasActedThisVisit &&
+                          controller.canAffordBase,
                       onTap: controller.buyBase,
                     ),
                     const SizedBox(height: 8),
@@ -157,7 +156,8 @@ class _ResultsPageState extends State<ResultsPage> {
                       boughtLabel: AppStrings.garageSold,
                       price: city.garagePrice,
                       fee: city.garageFee,
-                      isOwned: controller.activePlayer.ownsGarage(controller.relevantCityIndex),
+                      isOwned: controller.activePlayer
+                          .ownsGarage(controller.relevantCityIndex),
                       canAfford: controller.canBuyGarage,
                       onTap: controller.buyGarage,
                     ),
@@ -170,7 +170,8 @@ class _ResultsPageState extends State<ResultsPage> {
                         boughtLabel: AppStrings.marketSold,
                         price: city.marketPrice,
                         fee: city.marketFee,
-                        isOwned: controller.activePlayer.ownsMarket(controller.relevantCityIndex),
+                        isOwned: controller.activePlayer
+                            .ownsMarket(controller.relevantCityIndex),
                         canAfford: controller.canBuyMarket,
                         onTap: controller.buyMarket,
                       ),
@@ -179,7 +180,8 @@ class _ResultsPageState extends State<ResultsPage> {
                     ElevatedButton.icon(
                       onPressed: controller.finishTurn,
                       icon: const Icon(Icons.flag_circle, size: 18),
-                      label: const Text(AppStrings.endTurn, style: TextStyle(fontSize: 14)),
+                      label: const Text(AppStrings.endTurn,
+                          style: TextStyle(fontSize: 14)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         minimumSize: const Size(double.infinity, 46),
@@ -196,7 +198,8 @@ class _ResultsPageState extends State<ResultsPage> {
             top: 24,
             left: 0,
             right: 0,
-            child: Center(child: _WinToast(key: ValueKey(controller.activePlayerIndex))),
+            child: Center(
+                child: _WinToast(key: ValueKey(controller.activePlayerIndex))),
           ),
       ],
     );
@@ -213,7 +216,8 @@ class _WinToast extends StatefulWidget {
   State<_WinToast> createState() => _WinToastState();
 }
 
-class _WinToastState extends State<_WinToast> with SingleTickerProviderStateMixin {
+class _WinToastState extends State<_WinToast>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2200),
@@ -249,12 +253,14 @@ class _WinToastState extends State<_WinToast> with SingleTickerProviderStateMixi
           color: AppColors.success,
           borderRadius: BorderRadius.circular(30),
           boxShadow: const [
-            BoxShadow(color: Colors.black45, blurRadius: 12, offset: Offset(0, 4)),
+            BoxShadow(
+                color: Colors.black45, blurRadius: 12, offset: Offset(0, 4)),
           ],
         ),
         child: const Text(
           AppStrings.resultWonHeadline,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );
