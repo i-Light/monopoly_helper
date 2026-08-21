@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 ///
 /// This is a deliberately trimmed-down version of the player model the
 /// app used to ship (that one also tracked jail state, bankruptcy, and a
-/// dice roller — none of which are part of the redesigned flow). Only
-/// what the new turn loop actually needs is kept:
+/// dice roller — none of which were part of the redesigned flow). Jail
+/// state ([inPrison]/[prisonReleasePending]) has since been reintroduced,
+/// but as a new, purpose-built mechanic for the "special tiles" feature —
+/// not a resurrection of the old, deleted `PlayerProvider` fields. Aside
+/// from that, only what the turn loop actually needs is kept:
 ///   * [balance]: the player's cash, in the same currency the board uses.
 ///   * [position]: the index (into `CitiesData.all`) of the city the
 ///     player's physical piece is standing on right now.
@@ -24,6 +27,8 @@ class PlayerModel {
     required this.color,
     required this.balance,
     this.position = 0,
+    this.inPrison = false,
+    this.prisonReleasePending = false,
     List<int>? ownedCityIndices,
     List<int>? ownedGarageIndices,
     List<int>? ownedMarketIndices,
@@ -36,6 +41,20 @@ class PlayerModel {
   final Color color;
   int balance;
   int position;
+
+  /// Whether this player is currently serving time — set by
+  /// [GameSessionController.arrestActivePlayerForDebt], cleared either by
+  /// winning an escape challenge or by [prisonReleasePending] resolving at
+  /// the start of a later turn.
+  bool inPrison;
+
+  /// Set when the player pays bail instead of attempting an escape
+  /// challenge: they stay jailed for the rest of *this* turn (no
+  /// movement), then are automatically freed to Start at the very start
+  /// of their *next* turn, without needing to see the prison choice
+  /// screen again.
+  bool prisonReleasePending;
+
   final List<int> ownedCityIndices;
   final List<int> ownedGarageIndices;
   final List<int> ownedMarketIndices;

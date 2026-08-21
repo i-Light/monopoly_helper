@@ -16,6 +16,7 @@ class ScaleToFit extends StatelessWidget {
     required this.child,
     this.referenceWidth = 560,
     this.alignment = Alignment.topCenter,
+    this.fit = BoxFit.scaleDown,
   });
 
   final Widget child;
@@ -27,10 +28,18 @@ class ScaleToFit extends StatelessWidget {
 
   final Alignment alignment;
 
+  /// How the reference-sized [child] is fitted into the space this widget
+  /// is given. Defaults to [BoxFit.scaleDown] (shrink only, never grow).
+  /// Pass [BoxFit.contain] instead when the content should also grow to
+  /// use up extra room on large screens — it still preserves the child's
+  /// aspect ratio (no stretching/cropping), it just no longer caps out at
+  /// 1:1 scale.
+  final BoxFit fit;
+
   @override
   Widget build(BuildContext context) {
     return FittedBox(
-      fit: BoxFit.scaleDown,
+      fit: fit,
       alignment: alignment,
       child: SizedBox(
         width: referenceWidth,

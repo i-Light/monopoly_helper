@@ -5,7 +5,7 @@ import 'package:monopoly_helper/core/constants/app_strings.dart';
 import 'package:monopoly_helper/core/constants/app_colors.dart';
 import 'package:monopoly_helper/core/constants/game_constants.dart';
 import 'package:monopoly_helper/core/widgets/custom_card.dart';
-import 'package:monopoly_helper/data/datasets/fitness_challenges_data.dart';
+import 'package:monopoly_helper/data/datasets/mini_games/fitness_challenges_data.dart';
 
 class FitnessChallengesGame extends BaseMiniGame {
   FitnessChallengesGame()

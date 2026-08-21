@@ -63,7 +63,8 @@ class AppStrings {
   // Results stage (screen 3 of the main turn loop)
   // ---------------------------------------------------------------------
   static const String resultWonHeadline = 'فزت بالتحدي! تحرك مجاناً 🎉';
-  static const String resultPaidHeadline = 'خسرت التحدي، بس دفعت وكملت الحركة 💰';
+  static const String resultPaidHeadline =
+      'خسرت التحدي، بس دفعت وكملت الحركة 💰';
   static const String resultStayedHeadline = 'خسرت التحدي وقررت تفضل مكانك';
   static const String goToCityPrefix = 'روح';
   static const String stayAtCityPrefix = 'ابق في';
@@ -82,6 +83,28 @@ class AppStrings {
   static const String payOwnerAndFinish = 'ادفع له وأنهي الدور';
 
   static const String insufficientFunds = 'الرصيد مش كافي لإتمام العملية';
+
+  // ---------------------------------------------------------------------
+  // Special tiles: Start / Express Bus / Club / Prison
+  // ---------------------------------------------------------------------
+  static const String passthroughStartMessage =
+      'وصلت البداية، معدي بس، مفيش شراء هنا.';
+  static const String passthroughExpressBusMessage =
+      'ركبت الأوتوبيس السريع، معدي بس.';
+  static const String passthroughPrisonVisitMessage =
+      'زرت السجن بس مش متسجن، معدي بس.';
+
+  static const String clubSubscribeLabel = 'اشترك في النادي';
+  static const String clubAlreadyMember = 'أنت عضو بالفعل';
+  static const String clubFull = 'النادي مكتمل أدفع 30£ للبنك';
+
+  static const String prisonArrestButtonLabel =
+      'مش معايا فلوس كفاية، روح السجن';
+  static const String prisonChoiceHeadline = 'أنت في السجن!';
+  static const String prisonAttemptEscapeLabel = 'حاول تهرب (تحدي صعب)';
+  static const String prisonPayBailLabel = 'ادفع الكفالة';
+  static const String prisonEscapeWonHeadline = 'هربت من السجن! 🎉';
+  static const String prisonEscapeLostHeadline = 'فشلت في الهروب، لسه في السجن';
 
   // ---------------------------------------------------------------------
   // Player status bar

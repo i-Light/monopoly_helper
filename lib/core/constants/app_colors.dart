@@ -65,4 +65,14 @@ class AppColors {
     Color(0xFFFDD835), // Yellow
     Color(0xFFD81B60), // Pink
   ];
+
+
+  static const Color cityBlue = Color(0xff36165E);
+  static const Color cityGreen = Color(0xff165E29);
+  static const Color cityRed = Color(0xff5E2916);
+  static const Color cityOrange = Color(0xffA95C18);
+  static const Color cityPink = Color(0xff781C50);
+  static const Color cityYellow = Color(0xff81771C);
+  static const Color cityCyan = Color(0xff0F6083);
+  static const Color cityWhite = Color(0xffffffff);
 }

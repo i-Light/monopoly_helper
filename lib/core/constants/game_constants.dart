@@ -8,6 +8,9 @@ class GameConstants {
   static const int maxConsecutiveDoubles = 3;
   static const int maxJailTurns = 3;
 
+  // Club Tile
+  static const int clubSubscriberCapacity = 2;
+
   // Mini Game Reward & Penalty Defaults
   static const int easyReward = 50;
   static const int easyPenalty = 20;

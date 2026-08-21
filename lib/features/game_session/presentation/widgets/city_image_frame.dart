@@ -41,7 +41,8 @@ class CityImageFrame extends StatelessWidget {
                 Image.asset(
                   'assets/images/cities/${city.idx}.jpg',
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => _CityPlaceholder(city: city),
+                  errorBuilder: (context, error, stackTrace) =>
+                      _CityPlaceholder(city: city),
                 ),
                 Positioned(
                   left: 0,
@@ -92,8 +93,8 @@ class _CityPlaceholder extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            city.colorOnBoard.withValues(alpha: 0.85),
-            city.colorOnBoard.withValues(alpha: 0.45),
+            city.colorOnBoard, //.withValues(alpha: 0.85),
+            city.colorOnBoard, //.withValues(alpha: 0.45),
           ],
         ),
       ),
@@ -101,7 +102,8 @@ class _CityPlaceholder extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.location_city, color: Colors.white.withValues(alpha: 0.9), size: 44 * scale),
+            Icon(Icons.location_city,
+                color: Colors.white.withValues(alpha: 0.9), size: 44 * scale),
             SizedBox(height: 8 * scale),
             Text(
               city.name,
@@ -140,9 +142,10 @@ class _TooltipRail extends StatelessWidget {
         width: 18 * scale,
         height: height,
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.55),
+          color: color, //.withValues(alpha: 0.55),
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
+          border:
+              Border.all(width: 3, color: Colors.white.withValues(alpha: 1.0)),
         ),
       ),
     );

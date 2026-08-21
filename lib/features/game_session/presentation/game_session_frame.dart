@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:monopoly_helper/features/game_session/presentation/pages/challenge_page.dart';
 import 'package:monopoly_helper/features/game_session/presentation/pages/moves_selection_page.dart';
 import 'package:monopoly_helper/features/game_session/presentation/pages/results_page.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/prison/prison_choice_page.dart';
 import 'package:monopoly_helper/features/game_session/state/game_session_controller.dart';
 
-/// The "main frame" from the brief: an infinite loop of three pages —
-/// moves selection -> challenge -> results -> (next player's) moves
-/// selection -> ... — all driven by [GameSessionController.stage].
+/// The "main frame" from the brief: an infinite loop of pages — moves
+/// selection -> challenge -> results -> (next player's) moves selection
+/// -> ... — all driven by [GameSessionController.stage]. A jailed
+/// player's turn substitutes [PrisonChoicePage] for moves selection.
 class GameSessionFrame extends StatelessWidget {
   const GameSessionFrame({super.key, required this.controller});
 
@@ -22,6 +24,7 @@ class GameSessionFrame extends StatelessWidget {
           TurnStage.movesSelection => MovesSelectionPage(controller: controller),
           TurnStage.challenge => ChallengePage(controller: controller),
           TurnStage.results => ResultsPage(controller: controller),
+          TurnStage.prisonChoice => PrisonChoicePage(controller: controller),
         },
       ),
     );

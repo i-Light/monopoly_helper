@@ -17,10 +17,17 @@ class PlayerStatusBar extends StatefulWidget {
     super.key,
     required this.players,
     required this.activePlayerIndex,
+    this.activePlayerDisplayPositionOverride,
   });
 
   final List<PlayerModel> players;
   final int activePlayerIndex;
+
+  /// When set, shown as the active player's city instead of
+  /// `players[activePlayerIndex].position` — used to reflect a decided
+  /// but not-yet-committed move (see
+  /// [GameSessionController.activePlayerDisplayPositionOverride]).
+  final int? activePlayerDisplayPositionOverride;
 
   @override
   State<PlayerStatusBar> createState() => _PlayerStatusBarState();
@@ -51,7 +58,11 @@ class _PlayerStatusBarState extends State<PlayerStatusBar> {
                   final player = widget.players[index];
                   final isActive = index == widget.activePlayerIndex;
                   final key = _cardKeys.putIfAbsent(index, () => GlobalKey());
-                  final cityName = CitiesData.byIndex(player.position).name;
+                  final displayPosition = isActive &&
+                          widget.activePlayerDisplayPositionOverride != null
+                      ? widget.activePlayerDisplayPositionOverride!
+                      : player.position;
+                  final cityName = CitiesData.byIndex(displayPosition).name;
 
                   return Expanded(
                     key: key,
@@ -66,17 +77,21 @@ class _PlayerStatusBarState extends State<PlayerStatusBar> {
                           height: (_compact ? 6 : 50) * scale,
                           padding: _compact
                               ? EdgeInsets.zero
-                              : EdgeInsets.symmetric(horizontal: 6 * scale, vertical: 4 * scale),
+                              : EdgeInsets.symmetric(
+                                  horizontal: 6 * scale, vertical: 4 * scale),
                           decoration: BoxDecoration(
-                            color: player.color.withValues(alpha: isActive ? 0.9 : 0.55),
-                            borderRadius: BorderRadius.circular(_compact ? 4 : 12),
+                            color: player.color
+                                .withValues(alpha: isActive ? 0.9 : 0.55),
+                            borderRadius:
+                                BorderRadius.circular(_compact ? 4 : 12),
                             border: isActive
                                 ? Border.all(color: Colors.white, width: 2)
                                 : null,
                             boxShadow: isActive
                                 ? [
                                     BoxShadow(
-                                      color: player.color.withValues(alpha: 0.5),
+                                      color:
+                                          player.color.withValues(alpha: 0.5),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -97,7 +112,7 @@ class _PlayerStatusBarState extends State<PlayerStatusBar> {
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 11 * scale,
+                                        fontSize: 15 * scale,
                                       ),
                                     ),
                                     Text(
@@ -108,8 +123,9 @@ class _PlayerStatusBarState extends State<PlayerStatusBar> {
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Colors.white.withValues(alpha: 0.85),
-                                        fontSize: 9 * scale,
+                                        color: Colors.white
+                                            .withValues(alpha: 0.85),
+                                        fontSize: 11 * scale,
                                       ),
                                     ),
                                   ],

@@ -5,7 +5,7 @@ import 'package:monopoly_helper/core/constants/app_strings.dart';
 import 'package:monopoly_helper/core/constants/app_colors.dart';
 import 'package:monopoly_helper/core/constants/game_constants.dart';
 import 'package:monopoly_helper/core/widgets/custom_card.dart';
-import 'package:monopoly_helper/data/datasets/odd_one_out_data.dart';
+import 'package:monopoly_helper/data/datasets/mini_games/odd_one_out_data.dart';
 
 class OddOneOutGame extends BaseMiniGame {
   OddOneOutGame()

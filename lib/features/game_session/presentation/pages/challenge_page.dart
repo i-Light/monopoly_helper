@@ -7,6 +7,7 @@ import 'package:monopoly_helper/core/widgets/game_timer_widget.dart';
 import 'package:monopoly_helper/core/widgets/scale_to_fit.dart';
 import 'package:monopoly_helper/features/challenge_picker/presentation/show_challenge_picker.dart';
 import 'package:monopoly_helper/features/game_session/presentation/dialogs/pay_confirmation_dialog.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/prison/prison_challenge_toolbar.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/bottom_action_toolbar.dart';
 import 'package:monopoly_helper/features/game_session/state/game_session_controller.dart';
 
@@ -70,37 +71,43 @@ class ChallengePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: () => _showRules(context, game.rules),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 4 * scale),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8 * scale),
-                      decoration: BoxDecoration(
-                        color: game.difficulty.color.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
+          RepaintBoundary(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () => _showRules(context, game.rules),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4 * scale),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8 * scale),
+                        decoration: BoxDecoration(
+                          color: game.difficulty.color.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(game.icon,
+                            color: game.difficulty.color, size: 22 * scale),
                       ),
-                      child: Icon(game.icon, color: game.difficulty.color, size: 22 * scale),
-                    ),
-                    SizedBox(width: 10 * scale),
-                    Expanded(
-                      child: Text(
-                        game.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16 * scale, fontWeight: FontWeight.bold),
+                      SizedBox(width: 10 * scale),
+                      Expanded(
+                        child: Text(
+                          game.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 16 * scale,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 6 * scale),
-                    Icon(Icons.info_outline, size: 16 * scale, color: Colors.grey),
-                    SizedBox(width: 8 * scale),
-                    DifficultyBadge(difficulty: game.difficulty),
-                  ],
+                      SizedBox(width: 6 * scale),
+                      Icon(Icons.info_outline,
+                          size: 16 * scale, color: Colors.grey),
+                      SizedBox(width: 8 * scale),
+                      DifficultyBadge(difficulty: game.difficulty),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -109,6 +116,7 @@ class ChallengePage extends StatelessWidget {
           Expanded(
             child: ScaleToFit(
               referenceWidth: isDesktop ? 680 : 400,
+              fit: BoxFit.contain,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,14 +145,19 @@ class ChallengePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10 * scale),
-          BottomActionToolbar(
-            outcome: controller.challengeOutcome,
-            penaltyAmount: game.penaltyAmount,
-            onNewChallenge: () => _openPicker(context),
-            onDontMove: controller.chooseDontMove,
-            onConfirmWon: controller.confirmWonMove,
-            onRequestPay: () => _requestPay(context),
-          ),
+          controller.isPrisonChallenge
+              ? PrisonChallengeToolbar(
+                  outcome: controller.challengeOutcome,
+                  onContinue: controller.confirmPrisonChallengeOutcome,
+                )
+              : BottomActionToolbar(
+                  outcome: controller.challengeOutcome,
+                  penaltyAmount: game.penaltyAmount,
+                  onNewChallenge: () => _openPicker(context),
+                  onDontMove: controller.chooseDontMove,
+                  onConfirmWon: controller.confirmWonMove,
+                  onRequestPay: () => _requestPay(context),
+                ),
         ],
       ),
     );
@@ -173,12 +186,14 @@ class _TimerBlock extends StatelessWidget {
           children: [
             if (!controller.isTimerRunning)
               IconButton(
-                icon: const Icon(Icons.play_arrow, color: AppColors.success, size: 22),
+                icon: const Icon(Icons.play_arrow,
+                    color: AppColors.success, size: 22),
                 onPressed: controller.startTimer,
               )
             else
               IconButton(
-                icon: const Icon(Icons.pause, color: AppColors.warning, size: 22),
+                icon:
+                    const Icon(Icons.pause, color: AppColors.warning, size: 22),
                 onPressed: controller.pauseTimer,
               ),
             IconButton(

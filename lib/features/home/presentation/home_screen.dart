@@ -69,6 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
           PlayerStatusBar(
             players: _controller.players,
             activePlayerIndex: _controller.activePlayerIndex,
+            activePlayerDisplayPositionOverride:
+                _controller.activePlayerDisplayPositionOverride,
           ),
           Expanded(
             child: Stack(

@@ -48,20 +48,24 @@ class _ChallengePickerPanelState extends State<ChallengePickerPanel> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(16 * scale, 14 * scale, 16 * scale, 6 * scale),
+          padding: EdgeInsets.fromLTRB(
+              16 * scale, 14 * scale, 16 * scale, 6 * scale),
           child: Row(
             children: [
-              Icon(Icons.sports_esports, color: AppColors.primary, size: 20 * scale),
+              Icon(Icons.sports_esports,
+                  color: AppColors.primary, size: 20 * scale),
               SizedBox(width: 8 * scale),
               Text(
                 AppStrings.challengePickerTitle,
-                style: TextStyle(fontSize: 16 * scale, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 16 * scale, fontWeight: FontWeight.bold),
               ),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12 * scale, vertical: 6 * scale),
+          padding:
+              EdgeInsets.symmetric(horizontal: 12 * scale, vertical: 6 * scale),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -77,28 +81,32 @@ class _ChallengePickerPanelState extends State<ChallengePickerPanel> {
                   label: AppStrings.easy,
                   selected: _filter == MiniGameDifficulty.easy,
                   color: AppColors.easyTier,
-                  onTap: () => setState(() => _filter = MiniGameDifficulty.easy),
+                  onTap: () =>
+                      setState(() => _filter = MiniGameDifficulty.easy),
                 ),
                 SizedBox(width: 6 * scale),
                 _FilterChipButton(
                   label: AppStrings.medium,
                   selected: _filter == MiniGameDifficulty.medium,
                   color: AppColors.mediumTier,
-                  onTap: () => setState(() => _filter = MiniGameDifficulty.medium),
+                  onTap: () =>
+                      setState(() => _filter = MiniGameDifficulty.medium),
                 ),
                 SizedBox(width: 6 * scale),
                 _FilterChipButton(
                   label: AppStrings.hard,
                   selected: _filter == MiniGameDifficulty.hard,
                   color: AppColors.hardTier,
-                  onTap: () => setState(() => _filter = MiniGameDifficulty.hard),
+                  onTap: () =>
+                      setState(() => _filter = MiniGameDifficulty.hard),
                 ),
               ],
             ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12 * scale, vertical: 4 * scale),
+          padding:
+              EdgeInsets.symmetric(horizontal: 12 * scale, vertical: 4 * scale),
           child: ElevatedButton.icon(
             onPressed: () {
               final candidates = _games;
@@ -109,12 +117,14 @@ class _ChallengePickerPanelState extends State<ChallengePickerPanel> {
             icon: Icon(Icons.shuffle, size: 18 * scale),
             label: Text(
               AppStrings.randomGame,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13 * scale),
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 13 * scale),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               minimumSize: Size(double.infinity, 42 * scale),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           ),
         ),
@@ -131,47 +141,60 @@ class _ChallengePickerPanelState extends State<ChallengePickerPanel> {
                 )
               : ListView.builder(
                   shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(vertical: 4 * scale, horizontal: 6 * scale),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 4 * scale, horizontal: 6 * scale),
                   itemCount: _games.length,
                   itemBuilder: (context, index) {
                     final game = _games[index];
                     return Padding(
                       padding: EdgeInsets.symmetric(vertical: 2 * scale),
-                      child: Material(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(10),
-                        child: InkWell(
+                      child: RepaintBoundary(
+                        child: Material(
+                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
-                          onTap: () => widget.onGameSelected(game),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 8 * scale),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: game.difficulty.color.withValues(alpha: 0.25)),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(game.icon, color: game.difficulty.color, size: 20 * scale),
-                                SizedBox(width: 8 * scale),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        game.title,
-                                        style: TextStyle(fontSize: 13 * scale, fontWeight: FontWeight.w600),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        '${game.timeLimitSeconds} ${AppStrings.seconds}',
-                                        style: TextStyle(fontSize: 11 * scale, color: Colors.grey),
-                                      ),
-                                    ],
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () => widget.onGameSelected(game),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10 * scale, vertical: 8 * scale),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    color: game.difficulty.color
+                                        .withValues(alpha: 0.25)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(game.icon,
+                                      color: game.difficulty.color,
+                                      size: 20 * scale),
+                                  SizedBox(width: 8 * scale),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          game.title,
+                                          style: TextStyle(
+                                              fontSize: 13 * scale,
+                                              fontWeight: FontWeight.w600),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          '${game.timeLimitSeconds} ${AppStrings.seconds}',
+                                          style: TextStyle(
+                                              fontSize: 11 * scale,
+                                              color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                DifficultyBadge(difficulty: game.difficulty),
-                              ],
+                                  DifficultyBadge(difficulty: game.difficulty),
+                                ],
+                              ),
                             ),
                           ),
                         ),

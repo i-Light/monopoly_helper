@@ -9,9 +9,11 @@ import 'package:monopoly_helper/features/mini_games/core/base_mini_game.dart';
 import 'package:monopoly_helper/features/mini_games/core/mini_game_difficulty.dart';
 import 'package:monopoly_helper/features/mini_games/core/mini_game_manager.dart';
 
-/// Which of the three looping screens is currently shown inside the main
-/// frame.
-enum TurnStage { movesSelection, challenge, results }
+/// Which screen is currently shown inside the main frame.
+///
+/// [prisonChoice] replaces [movesSelection] for a turn where the active
+/// player is jailed — see [GameSessionController.arrestActivePlayerForDebt].
+enum TurnStage { movesSelection, challenge, results, prisonChoice }
 
 /// Where the current mini-game challenge stands.
 enum ChallengeOutcome { undetermined, won, lost }
@@ -36,12 +38,17 @@ class GameSessionController extends ChangeNotifier {
 
   static List<PlayerModel> _defaultPlayers() {
     const colors = [
+      Color(0xFFFB8C00),
       Color(0xFFE53935),
       Color(0xFF1E88E5),
       Color(0xFF43A047),
-      Color(0xFFFB8C00),
     ];
-    const names = ['مصطفى', 'أحمد', 'جنى']; //['لاعب 1', 'لاعب 2', 'لاعب 3'];
+    const names = [
+      'جنى',
+      'مصطفى',
+      'أحمد',
+    ];
+    //['لاعب 1', 'لاعب 2', 'لاعب 3'];
     return List.generate(
       names.length,
       (i) => PlayerModel(
@@ -67,6 +74,12 @@ class GameSessionController extends ChangeNotifier {
 
   MoveResolution moveResolution = MoveResolution.none;
   int? _destinationCityIndex;
+
+  /// Whether the mini-game currently in progress is a forced-hard prison
+  /// escape attempt rather than a normal move challenge — read by
+  /// [ChallengePage] to swap in the simpler prison toolbar, and by
+  /// [ResultsPage] to show the escape outcome instead of city content.
+  bool isPrisonChallenge = false;
 
   /// Whether the active player has already bought or sold something while
   /// standing on the current city. Only one buy/sell action is allowed per
@@ -218,6 +231,16 @@ class GameSessionController extends ChangeNotifier {
       moveResolution == MoveResolution.wonFree ||
       moveResolution == MoveResolution.paidToMove;
 
+  /// The city to show as the active player's position right now — once
+  /// they've reached the results stage the destination is already
+  /// decided, so the top status bar should reflect it immediately instead
+  /// of waiting for [endTurn] to actually commit [PlayerModel.position].
+  /// Null when the active player hasn't moved (nothing to override).
+  int? get activePlayerDisplayPositionOverride =>
+      stage == TurnStage.results && playerMovedThisTurn
+          ? relevantCityIndex
+          : null;
+
   PlayerModel? get ownerOfRelevantCity {
     for (final player in players) {
       if (player.ownsCity(relevantCityIndex)) return player;
@@ -234,6 +257,26 @@ class GameSessionController extends ChangeNotifier {
   bool get canAffordGarage => activePlayer.balance >= relevantCity.garagePrice;
   bool get canAffordMarket => activePlayer.balance >= relevantCity.marketPrice;
 
+  /// The rent owed to the owner: the highest tier they've actually bought
+  /// (market > garage > base), not just the base fee.
+  int get feeOwedToOwner {
+    final owner = ownerOfRelevantCity;
+    if (owner != null && owner.ownsMarket(relevantCityIndex)) {
+      return relevantCity.marketFee;
+    }
+    if (owner != null && owner.ownsGarage(relevantCityIndex)) {
+      return relevantCity.garageFee;
+    }
+    return relevantCity.baseFee;
+  }
+
+  bool get canAffordFee => activePlayer.balance >= feeOwedToOwner;
+
+  /// Whether the active player can choose to skip paying and go to prison
+  /// instead — always offered while standing on another player's city,
+  /// not just when they can't afford the alternatives.
+  bool get canChooseArrest => !hasActedThisVisit && relevantCityOwnedByOther;
+
   /// The garage can only be bought once the base plot is owned.
   bool get canBuyGarage =>
       !hasActedThisVisit &&
@@ -248,7 +291,9 @@ class GameSessionController extends ChangeNotifier {
   void buyBase() {
     if (hasActedThisVisit ||
         activePlayer.ownsCity(relevantCityIndex) ||
-        !canAffordBase) return;
+        !canAffordBase) {
+      return;
+    }
     activePlayer.balance -= relevantCity.basePrice;
     activePlayer.ownedCityIndices.add(relevantCityIndex);
     hasActedThisVisit = true;
@@ -267,6 +312,37 @@ class GameSessionController extends ChangeNotifier {
     if (activePlayer.ownsMarket(relevantCityIndex) || !canBuyMarket) return;
     activePlayer.balance -= relevantCity.marketPrice;
     activePlayer.ownedMarketIndices.add(relevantCityIndex);
+    hasActedThisVisit = true;
+    notifyListeners();
+  }
+
+  // ---------------------------------------------------------------------
+  // Club tile: up to clubSubscriberCapacity independent subscribers,
+  // reusing ownedCityIndices — no rent, no garage/market tier. Because
+  // this makes ownership non-exclusive, club content must never consult
+  // ownerOfRelevantCity/relevantCityOwnedByOther (those only know about
+  // a single "first" owner) — only the getters below.
+  // ---------------------------------------------------------------------
+
+  List<PlayerModel> get clubSubscribers =>
+      players.where((p) => p.ownsCity(relevantCityIndex)).toList();
+
+  bool get clubHasOpenSlot =>
+      clubSubscribers.length < GameConstants.clubSubscriberCapacity;
+
+  bool get activePlayerIsClubSubscriber =>
+      activePlayer.ownsCity(relevantCityIndex);
+
+  bool get canSubscribeToClub =>
+      !hasActedThisVisit &&
+      !activePlayerIsClubSubscriber &&
+      clubHasOpenSlot &&
+      activePlayer.balance >= relevantCity.basePrice;
+
+  void subscribeToClub() {
+    if (!canSubscribeToClub) return;
+    activePlayer.balance -= relevantCity.basePrice;
+    activePlayer.ownedCityIndices.add(relevantCityIndex);
     hasActedThisVisit = true;
     notifyListeners();
   }
@@ -292,7 +368,7 @@ class GameSessionController extends ChangeNotifier {
     if (hasActedThisVisit) return;
     final owner = ownerOfRelevantCity;
     if (owner == null) return;
-    final fee = relevantCity.baseFee;
+    final fee = feeOwedToOwner;
     activePlayer.balance -= fee;
     owner.balance += fee;
     hasActedThisVisit = true;
@@ -307,6 +383,10 @@ class GameSessionController extends ChangeNotifier {
     if (playerMovedThisTurn) {
       activePlayer.position = relevantCityIndex;
     }
+    _advanceToNextPlayer();
+  }
+
+  void _advanceToNextPlayer() {
     activePlayerIndex = (activePlayerIndex + 1) % players.length;
     _resetForNextTurn();
   }
@@ -314,7 +394,6 @@ class GameSessionController extends ChangeNotifier {
   void _resetForNextTurn() {
     _timerController?.dispose();
     _timerController = null;
-    stage = TurnStage.movesSelection;
     selectedSteps = null;
     currentGame = null;
     challengeOutcome = ChallengeOutcome.undetermined;
@@ -322,6 +401,65 @@ class GameSessionController extends ChangeNotifier {
     _destinationCityIndex = null;
     rulesExpanded = false;
     hasActedThisVisit = false;
+    isPrisonChallenge = false;
+
+    // Bail was paid last turn — auto-release at Start, skip the prison
+    // choice screen entirely for this turn.
+    if (activePlayer.prisonReleasePending) {
+      activePlayer.prisonReleasePending = false;
+      activePlayer.inPrison = false;
+      activePlayer.position = CitiesData.startIndex;
+    }
+
+    stage = activePlayer.inPrison ? TurnStage.prisonChoice : TurnStage.movesSelection;
+    notifyListeners();
+  }
+
+  // ---------------------------------------------------------------------
+  // Prison: arrest (insolvency), and serving time.
+  // ---------------------------------------------------------------------
+
+  /// Chosen via the "can't pay" button — see [canChooseArrest]. Moves the
+  /// token straight to the prison tile (not [relevantCityIndex]) and ends
+  /// the turn immediately, mirroring how [buyFromOwner] and
+  /// [payOwnerAndFinishTurn] already end the turn themselves.
+  void arrestActivePlayerForDebt() {
+    if (!canChooseArrest) return;
+    activePlayer.inPrison = true;
+    activePlayer.position = CitiesData.prisonIndex;
+    hasActedThisVisit = true;
+    _advanceToNextPlayer();
+  }
+
+  /// Starts a forced-hard mini-game as the jailed player's escape attempt.
+  void attemptPrisonEscape() {
+    isPrisonChallenge = true;
+    _startChallenge(
+        _gameManager.getRandomGame(difficulty: MiniGameDifficulty.hard));
+    stage = TurnStage.challenge;
+    notifyListeners();
+  }
+
+  /// Skips the challenge and guarantees release — but not until the
+  /// start of the player's *next* turn (see [_resetForNextTurn]). Ends
+  /// the turn immediately; there is no results screen for this choice.
+  void payPrisonBail() {
+    if (activePlayer.balance < GameConstants.jailBailCost) return;
+    activePlayer.balance -= GameConstants.jailBailCost;
+    activePlayer.prisonReleasePending = true;
+    _advanceToNextPlayer();
+  }
+
+  /// Resolves a finished escape challenge (called from the prison
+  /// challenge toolbar's single continue button) and moves to the results
+  /// stage to show the outcome.
+  void confirmPrisonChallengeOutcome() {
+    if (challengeOutcome == ChallengeOutcome.won) {
+      activePlayer.inPrison = false;
+      activePlayer.position = CitiesData.startIndex;
+    }
+    // Lost: stays jailed — next turn offers the same choice again.
+    stage = TurnStage.results;
     notifyListeners();
   }
 

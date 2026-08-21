@@ -38,25 +38,29 @@ class StepsGrid extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(9, (i) {
                 final steps = i + 1;
-                final difficulty = GameSessionController.difficultyForSteps(steps);
-                return Material(
-                  color: difficulty.color.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(14),
-                  child: InkWell(
+                final difficulty =
+                    GameSessionController.difficultyForSteps(steps);
+                return RepaintBoundary(
+                  child: Material(
+                    color: difficulty.color.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(14),
-                    onTap: () => onStepsSelected(steps),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: difficulty.color, width: 1.4),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '$steps',
-                        style: TextStyle(
-                          fontSize: 26 * scale,
-                          fontWeight: FontWeight.w900,
-                          color: difficulty.color,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => onStepsSelected(steps),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border:
+                              Border.all(color: difficulty.color, width: 1.4),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '$steps',
+                          style: TextStyle(
+                            fontSize: 26 * scale,
+                            fontWeight: FontWeight.w900,
+                            color: difficulty.color,
+                          ),
                         ),
                       ),
                     ),

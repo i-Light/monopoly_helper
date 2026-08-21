@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:monopoly_helper/core/constants/app_colors.dart';
 import 'package:monopoly_helper/core/constants/app_strings.dart';
+import 'package:monopoly_helper/core/constants/game_constants.dart';
 import 'package:monopoly_helper/core/utils/responsive.dart';
 import 'package:monopoly_helper/core/widgets/confetti_overlay.dart';
 import 'package:monopoly_helper/core/widgets/scale_to_fit.dart';
-import 'package:monopoly_helper/data/models/player_model.dart';
+import 'package:monopoly_helper/data/models/city_model.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/club/club_subscribers_badge.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/club/club_tile_content.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/passthrough_tile_content.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/prison/prison_arrest_button.dart';
+import 'package:monopoly_helper/features/game_session/presentation/special_tiles/prison/prison_challenge_outcome_view.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/city_action_button.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/city_image_frame.dart';
+import 'package:monopoly_helper/features/game_session/presentation/widgets/end_turn_button.dart';
 import 'package:monopoly_helper/features/game_session/presentation/widgets/owner_badge.dart';
+import 'package:monopoly_helper/features/game_session/presentation/widgets/pay_fee_button.dart';
 import 'package:monopoly_helper/features/game_session/state/game_session_controller.dart';
 
 /// Stage 3 of the main frame: shows what happened, where the player's
 /// piece should physically move to (or that they're staying put), the
-/// city's image, and the buy/pay actions that end the turn.
+/// city's image, and the buy/pay actions that end the turn — except for
+/// the four special tiles (Start/Club/Express Bus/Prison), whose content
+/// is delegated to `presentation/special_tiles/` instead of the generic
+/// buy/base/garage/market flow below. A resolved prison escape challenge
+/// (no real city involved) short-circuits to [PrisonChallengeOutcomeView]
+/// before any of that.
 ///
 /// Like the challenge page, the whole body is wrapped in [ScaleToFit]
 /// rather than relying on [Expanded] to absorb the image's height: the
@@ -75,19 +88,125 @@ class _ResultsPageState extends State<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (controller.isPrisonChallenge) {
+      return PrisonChallengeOutcomeView(controller: controller);
+    }
+
     final scale = context.uiScale;
     final isDesktop = context.isDesktop;
     final city = controller.relevantCity;
-    final owner = controller.ownerOfRelevantCity;
-    final ownedByOther = controller.relevantCityOwnedByOther;
+
+    final Widget badgeSlot;
+    final Widget middleContent;
+    switch (city.kind) {
+      case CityKind.club:
+        badgeSlot = ClubSubscribersBadge(
+          subscribers: controller.clubSubscribers,
+          capacity: GameConstants.clubSubscriberCapacity,
+        );
+        middleContent = ClubTileContent(controller: controller);
+      case CityKind.start:
+      case CityKind.expressBus:
+      case CityKind.prison:
+        // Owner is always null for these three — nobody's ownedCityIndices
+        // ever contains their index — so OwnerBadge renders its existing
+        // empty-Container no-op.
+        badgeSlot = OwnerBadge(owner: controller.ownerOfRelevantCity);
+        middleContent = PassthroughTileContent(controller: controller, city: city);
+      case CityKind.normal:
+        badgeSlot = OwnerBadge(owner: controller.ownerOfRelevantCity);
+        middleContent = controller.relevantCityOwnedByOther
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CityActionButton(
+                    icon: Icons.handshake,
+                    buyLabel: AppStrings.buyFromOwner,
+                    boughtLabel: AppStrings.buyFromOwner,
+                    price: city.basePrice,
+                    fee: city.baseFee,
+                    isOwned: false,
+                    canAfford: !controller.hasActedThisVisit &&
+                        controller.canAffordBase,
+                    onTap: controller.buyFromOwner,
+                  ),
+                  const SizedBox(height: 8),
+                  PayFeeButton(
+                    fee: controller.feeOwedToOwner,
+                    canAfford: !controller.hasActedThisVisit &&
+                        controller.canAffordFee,
+                    onTap: controller.payOwnerAndFinishTurn,
+                  ),
+                  if (controller.canChooseArrest) ...[
+                    const SizedBox(height: 8),
+                    PrisonArrestButton(controller: controller),
+                  ],
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CityActionButton(
+                    icon: Icons.location_city,
+                    buyLabel: AppStrings.buyCity,
+                    boughtLabel: AppStrings.citySold,
+                    price: city.basePrice,
+                    fee: city.baseFee,
+                    isOwned: controller.activePlayer
+                        .ownsCity(controller.relevantCityIndex),
+                    canAfford: !controller.hasActedThisVisit &&
+                        controller.canAffordBase,
+                    onTap: controller.buyBase,
+                  ),
+                  const SizedBox(height: 8),
+                  // Garage stays visible even before the base plot is
+                  // owned, but isn't tappable until then.
+                  CityActionButton(
+                    icon: Icons.garage,
+                    buyLabel: AppStrings.buyGarage,
+                    boughtLabel: AppStrings.garageSold,
+                    price: city.garagePrice,
+                    fee: city.garageFee,
+                    isOwned: controller.activePlayer
+                        .ownsGarage(controller.relevantCityIndex),
+                    canAfford: controller.canBuyGarage,
+                    onTap: controller.buyGarage,
+                  ),
+                  // Market only appears at all once the garage is owned.
+                  if (controller.marketPurchaseUnlocked) ...[
+                    const SizedBox(height: 8),
+                    CityActionButton(
+                      icon: Icons.storefront,
+                      buyLabel: AppStrings.buyMarket,
+                      boughtLabel: AppStrings.marketSold,
+                      price: city.marketPrice,
+                      fee: city.marketFee,
+                      isOwned: controller.activePlayer
+                          .ownsMarket(controller.relevantCityIndex),
+                      canAfford: controller.canBuyMarket,
+                      onTap: controller.buyMarket,
+                    ),
+                  ],
+                  const SizedBox(height: 10),
+                  EndTurnButton(controller: controller),
+                ],
+              );
+    }
 
     return Stack(
       children: [
         Padding(
           padding: EdgeInsets.all(16 * scale),
-          child: Center(
+          // SizedBox.expand gives ScaleToFit tight bounds (rather than the
+          // loose ones a bare Center would provide), so its BoxFit.contain
+          // actually scales the content up to fill the available space
+          // instead of shrink-wrapping it at referenceWidth and leaving
+          // the rest of the page empty.
+          child: SizedBox.expand(
             child: ScaleToFit(
               referenceWidth: isDesktop ? 460 : 380,
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,93 +220,16 @@ class _ResultsPageState extends State<ResultsPage> {
                               ? '${AppStrings.goToCityPrefix} ${city.name}'
                               : '${AppStrings.stayAtCityPrefix} ${city.name}',
                           style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w900),
+                              fontSize: 26, fontWeight: FontWeight.w900),
                         ),
                       ),
-                      OwnerBadge(owner: owner),
+                      badgeSlot,
                     ],
                   ),
                   const SizedBox(height: 14),
                   CityImageFrame(city: city),
                   const SizedBox(height: 14),
-                  if (ownedByOther) ...[
-                    CityActionButton(
-                      icon: Icons.handshake,
-                      buyLabel: AppStrings.buyFromOwner,
-                      boughtLabel: AppStrings.buyFromOwner,
-                      price: city.basePrice,
-                      fee: city.baseFee,
-                      isOwned: false,
-                      canAfford: !controller.hasActedThisVisit &&
-                          controller.activePlayer.balance >= city.basePrice,
-                      onTap: controller.buyFromOwner,
-                    ),
-                    const SizedBox(height: 8),
-                    CityActionButton(
-                      icon: Icons.payments,
-                      buyLabel: AppStrings.payOwnerAndFinish,
-                      boughtLabel: AppStrings.payOwnerAndFinish,
-                      price: city.baseFee,
-                      fee: 0,
-                      isOwned: false,
-                      canAfford: !controller.hasActedThisVisit &&
-                          controller.activePlayer.balance >= city.baseFee,
-                      onTap: controller.payOwnerAndFinishTurn,
-                    ),
-                  ] else ...[
-                    CityActionButton(
-                      icon: Icons.location_city,
-                      buyLabel: AppStrings.buyCity,
-                      boughtLabel: AppStrings.citySold,
-                      price: city.basePrice,
-                      fee: city.baseFee,
-                      isOwned: controller.activePlayer
-                          .ownsCity(controller.relevantCityIndex),
-                      canAfford: !controller.hasActedThisVisit &&
-                          controller.canAffordBase,
-                      onTap: controller.buyBase,
-                    ),
-                    const SizedBox(height: 8),
-                    // Garage stays visible even before the base plot is
-                    // owned, but isn't tappable until then.
-                    CityActionButton(
-                      icon: Icons.garage,
-                      buyLabel: AppStrings.buyGarage,
-                      boughtLabel: AppStrings.garageSold,
-                      price: city.garagePrice,
-                      fee: city.garageFee,
-                      isOwned: controller.activePlayer
-                          .ownsGarage(controller.relevantCityIndex),
-                      canAfford: controller.canBuyGarage,
-                      onTap: controller.buyGarage,
-                    ),
-                    // Market only appears at all once the garage is owned.
-                    if (controller.marketPurchaseUnlocked) ...[
-                      const SizedBox(height: 8),
-                      CityActionButton(
-                        icon: Icons.storefront,
-                        buyLabel: AppStrings.buyMarket,
-                        boughtLabel: AppStrings.marketSold,
-                        price: city.marketPrice,
-                        fee: city.marketFee,
-                        isOwned: controller.activePlayer
-                            .ownsMarket(controller.relevantCityIndex),
-                        canAfford: controller.canBuyMarket,
-                        onTap: controller.buyMarket,
-                      ),
-                    ],
-                    const SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: controller.finishTurn,
-                      icon: const Icon(Icons.flag_circle, size: 18),
-                      label: const Text(AppStrings.endTurn,
-                          style: TextStyle(fontSize: 14)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        minimumSize: const Size(double.infinity, 46),
-                      ),
-                    ),
-                  ],
+                  middleContent,
                 ],
               ),
             ),

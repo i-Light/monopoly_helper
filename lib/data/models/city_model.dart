@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// What kind of board space a [CityModel] represents.
+///
+/// Everything defaults to [normal] (the generic buy base/garage/market
+/// flow). The other four values each get their own bespoke results-page
+/// content instead — see `presentation/special_tiles/`.
+enum CityKind { normal, start, club, expressBus, prison }
+
 /// A single city/property space on the physical board.
 ///
 /// Field names intentionally mirror the structure the user described for
@@ -12,6 +19,17 @@ import 'package:flutter/material.dart';
 /// ("fee") it charges other players who owe money for landing on it.
 @immutable
 class CityModel {
+  final int idx;
+  final String name;
+  final Color colorOnBoard;
+  final Color colorOnCard;
+  final int basePrice;
+  final int baseFee;
+  final int garagePrice;
+  final int? _customGarageFee;
+  final int marketPrice;
+  final int? _customMarketFee;
+  final CityKind kind;
   const CityModel({
     required this.idx,
     required this.name,
@@ -20,19 +38,14 @@ class CityModel {
     required this.basePrice,
     required this.baseFee,
     required this.garagePrice,
-    required this.garageFee,
+    int? garageFee,
     required this.marketPrice,
-    required this.marketFee,
-  });
+    int? marketFee,
+    this.kind = CityKind.normal,
+  })  : _customMarketFee = marketFee,
+        _customGarageFee = garageFee;
 
-  final int idx;
-  final String name;
-  final Color colorOnBoard;
-  final Color colorOnCard;
-  final int basePrice;
-  final int baseFee;
-  final int garagePrice;
-  final int garageFee;
-  final int marketPrice;
-  final int marketFee;
+  int get garageFee => _customGarageFee ?? baseFee * 2;
+
+  int get marketFee => _customMarketFee ?? baseFee * 5;
 }
