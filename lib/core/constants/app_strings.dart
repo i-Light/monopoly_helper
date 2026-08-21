@@ -8,7 +8,7 @@ class AppStrings {
   AppStrings._();
 
   // App Identity
-  static const String appTitle = 'مساعد مونوبولي';
+  static const String appTitle = 'بنك وقرشين';
   static const String appSubtitle = 'باقة الألعاب المصغرة والتحديات التفاعلية';
 
   // Difficulties
